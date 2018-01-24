@@ -52,7 +52,7 @@ class_block: OPEN_BLOCK doc_block code CLOSE_BLOCK
            ;
 
 value: STRING | NUMBER | BOOLEAN | LIST | ID;
-type: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN type MORE_THAN | ID;
+type: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN type (COMMA type) MORE_THAN | ID;
 
 parameter: ID TYPE_SETTER type // arg -> Integer
          | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
