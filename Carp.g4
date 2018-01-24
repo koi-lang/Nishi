@@ -29,12 +29,14 @@ class: (CLASS | OBJECT) ID block // class MyClass {}
 block: OPEN_BLOCK statement (SEPARATOR statement)* CLOSE_BLOCK;
 
 value: STRING | NUMBER | BOOLEAN;
-type: 'String' | 'Integer' | 'Boolean' | 'List' LESS_THAN type MORE_THAN;
+type: 'String' | 'Integer' | 'Boolean' | 'List' LESS_THAN type MORE_THAN | ID;
 
 parameter: ID TYPE_SETTER type // arg -> Integer
            | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
            | STAR ID TYPE_SETTER type // *arg -> Integer
            | STAR ID TYPE_SETTER type VARIABLE_SETTER value // *arg -> Integer: value
+           | ID VARIABLE_SETTER value // arg: value
+           | STAR ID VARIABLE_SETTER value // *arg: value
            ;
 
 /*
