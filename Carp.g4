@@ -17,9 +17,13 @@ comment: COMMENT | MULTI_COMMENT;
 
 statement: print | assignment;
 // print("Hello, World!")
-print: PRINT OPEN_BRACKET (value | ID) CLOSE_BRACKET;
-// my_var: "String"
-assignment: ID VARIABLE_SETTER value;
+print: PRINT OPEN_BRACKET ((value | ID) COMMA)* CLOSE_BRACKET;
+
+assignment: ID TYPE_SETTER type // arg -> Integer
+          | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
+          | STAR ID TYPE_SETTER type // *arg -> Integer
+          | ID VARIABLE_SETTER value // arg: value
+          ;
 
 // func my_func(name -> String) {}
 function: FUNCTION ID OPEN_BRACKET (parameter)* CLOSE_BRACKET block;
@@ -41,8 +45,8 @@ class_block: OPEN_BLOCK code CLOSE_BLOCK
            | OPEN_BLOCK public_block private_block code CLOSE_BLOCK
            ;
 
-value: STRING | NUMBER | BOOLEAN | ID;
-type: 'String' | 'Integer' | 'Boolean' | 'List' LESS_THAN type MORE_THAN | ID;
+value: STRING | NUMBER | BOOLEAN | LIST | ID;
+type: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN type MORE_THAN | ID;
 
 parameter: ID TYPE_SETTER type // arg -> Integer
          | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
