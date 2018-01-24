@@ -1,4 +1,4 @@
-package carp
+package Carp
 
 # Comment
 
@@ -17,6 +17,8 @@ class MyClass {
 
         # Types of variables are only set if not given a value
         my_empty -> Integer
+        # Types can also be given for documentation reasons, though
+        # my_empty -> Integer: 5
     }
 
     public {
@@ -28,7 +30,7 @@ class MyClass {
         try {
             my_empty: "This causes an error!"
         }
-        catch {
+        catch TypeError {
             my_empty: 5
         }
     }
@@ -58,7 +60,7 @@ class MyClass {
         printf("Hello, {name}")  # Prints a formatted string.
     }
 
-    func add(number_one: Integer, number_two: Integer) {
+    func add(number_one -> Integer, number_two -> Integer) -> Integer {
         return number_one + number_two
     }
 }
