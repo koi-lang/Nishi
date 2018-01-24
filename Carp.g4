@@ -29,7 +29,7 @@ class: (CLASS | OBJECT) ID block // class MyClass {}
 block: OPEN_BLOCK statement (SEPARATOR statement)* CLOSE_BLOCK;
 
 value: STRING | NUMBER | BOOLEAN;
-type: 'String' | 'Integer' | 'Boolean';
+type: 'String' | 'Integer' | 'Boolean' | 'List' LESS_THAN type MORE_THAN;
 
 parameter: ID TYPE_SETTER type // arg -> Integer
            | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
@@ -70,6 +70,8 @@ OPEN_BRACKET: '(';
 CLOSE_BRACKET: ')';
 OPEN_BLOCK: '{';
 CLOSE_BLOCK: '}';
+LESS_THAN: '<';
+MORE_THAN: '>';
 
 EXTENDS: 'extends';
 IMPLEMENTS: 'implements';
