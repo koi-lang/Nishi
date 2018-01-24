@@ -25,18 +25,8 @@ class MyClass {
         my_name: "MyClass"
     }
 
-    # The class constructor is called when a class is made (var = MyClass).
-    func construct() {
-        try {
-            my_empty: "This causes an error!"
-        }
-        catch TypeError {
-            my_empty: 5
-        }
-    }
-
-    # The init method is called when an instance of a class is made (var = MyClass(*parameters)).
-    func init() {
+    # The init method is called when an instance of a class is made (var: MyClass(*parameters)).
+    func initialize() {
         # Variables are set with a colon
         one: "Hello"
         two: "World!"
@@ -46,6 +36,15 @@ class MyClass {
         # Testing if a variable is equal to another is done with one "="
         if one = two {
             print("I don't know how that happened.")
+        }
+
+        # A try/catch statement will try to run a block of code
+        # If there are any, the first error will be caught, and the catch block will be run
+        try {
+            my_empty: "This causes an error!"
+        }
+        catch TypeError {
+            my_empty: 5
         }
     }
 
@@ -69,7 +68,7 @@ class MyClass {
         sum_: 0
 
         for num in numbers {
-            sum += num
+            sum+: num
         }
 
         return sum
@@ -82,7 +81,7 @@ class MyNewClass {
         sum_: 0
 
         for num in numbers {
-            sum -= num
+            sum-: num
         }
 
         return sum
