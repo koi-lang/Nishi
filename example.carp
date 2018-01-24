@@ -57,7 +57,7 @@ class MyClass {
             name: The name to say "Hello" to.
         }
 
-        printf("Hello, {name}")  # Prints a formatted string.
+        print(f"Hello, {name}")  # Prints a formatted string.
     }
 
     func add(number_one -> Integer, number_two -> Integer) -> Integer {
@@ -66,7 +66,7 @@ class MyClass {
 
     # Variable over-loading is supported
     func add(*numbers -> List<Integer>) -> Integer {
-        sum_ = 0
+        sum_: 0
 
         for num in numbers {
             sum += num
@@ -74,4 +74,32 @@ class MyClass {
 
         return sum
     }
+}
+
+
+class MyNewClass {
+    func sub(*numbers -> List<Integer>) -> Integer {
+        sum_: 0
+
+        for num in numbers {
+            sum -= num
+        }
+
+        return sum
+    }
+
+    func add_one(number -> Integer) -> Integer {
+        return number++
+    }
+}
+
+
+# Classes can inherent from multiple other classes
+class MultipleInheritance extends MyClass, MyNewClass {
+}
+
+
+# Like in Kotlin, an object is a class that contains an instance of the class
+object MyObject {
+    # Objects work just like classes, but have an instance of themselves.
 }
