@@ -38,8 +38,11 @@ class: (CLASS | OBJECT) ID class_block // class MyClass {}
 block: OPEN_BLOCK code CLOSE_BLOCK;
 variable_block: OPEN_BLOCK (assignment SEPARATOR)* CLOSE_BLOCK;
 
+// public {}
 public_block: PUBLIC variable_block;
+// private {}
 private_block: PRIVATE variable_block;
+// doc {}
 doc_block: DOC OPEN_BLOCK . CLOSE_BLOCK;
 
 class_block: OPEN_BLOCK doc_block code CLOSE_BLOCK
