@@ -8,7 +8,8 @@ options {
     Parser Rules
  */
 
-program: code EOF;
+program: package code EOF;
+package: PACKAGE ID (DOT ID)*;
 code: line+;
 line: comment;
 
@@ -18,16 +19,20 @@ comment: COMMENT | MULTI_COMMENT;
     Lexer Rules
  */
 
+PACKAGE: 'package';
+
 COMMENT: '#' ~[\r\n]* -> skip;
 MULTI_COMMENT: '#-' ~[-#]* '-#' -> skip;
 
-SPACE: [ \t\r\n] -> skip;
-
 STRING: ["] ~["\r\n]* ["];
 
-LETTER: ([a-z] | [A-Z])+;
+fragment LOWERCASE: [a-z];
+fragment UPPERCASE: [A-Z];
+fragment LETTER: (LOWERCASE | UPPERCASE)+;
 NUMBER: [0-9]+;
+DOT: '.';
 
-ID: [a-z]+;
+ID: LOWERCASE (LETTER | NUMBER)*;
 
+SPACE: [ \t\r\n] -> skip;
 WS: [ \t\r\n\f]+ -> skip;
