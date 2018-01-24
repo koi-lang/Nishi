@@ -102,3 +102,8 @@ class MultipleInheritance extends MyClass, MyNewClass {
 object MyObject {
     # Objects work just like classes, but have an instance of themselves.
 }
+
+# Functions can exist outside of classes
+func my_func() {
+    print("Cool!")
+}
