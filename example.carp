@@ -1,0 +1,45 @@
+package carp
+
+# Comment.
+
+#-
+    Multi-line
+    Comment.
+-#
+
+class MyClass {
+    private {
+        my_int: 1337
+        my_str: "Hello"
+        my_list: ["Hello", "World"]
+    }
+
+    public {
+        my_name: "MyClass"
+    }
+
+    func init() {
+        one: "Hello"
+        two: "World!"
+        
+        print(one, ", ", two)
+
+        if one = two {
+            print("I don't know how that happened.")
+        }
+    }
+
+    func hello(name -> String) {
+        doc {
+            This function welcomes the caller.
+
+            name: The name to say "Hello" to.
+        }
+
+        printf("Hello, {name}")  # Prints a formatted string.
+    }
+
+    func add(number_one: Integer, number_two: Integer) {
+        return number_one + number_two
+    }
+}
