@@ -63,4 +63,15 @@ class MyClass {
     func add(number_one -> Integer, number_two -> Integer) -> Integer {
         return number_one + number_two
     }
+
+    # Variable over-loading is supported
+    func add(*numbers -> List<Integer>) -> Integer {
+        sum_ = 0
+
+        for num in numbers {
+            sum += num
+        }
+
+        return sum
+    }
 }
