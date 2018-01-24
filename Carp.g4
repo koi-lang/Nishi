@@ -11,14 +11,20 @@ options {
 program: package code EOF;
 package: PACKAGE ID (DOT ID)*;
 code: line+;
-line: comment | function;
+line: comment | function | class;
 
 comment: COMMENT | MULTI_COMMENT;
 
 statement: print;
 print: PRINT OPEN_BRACKET (value | ID) CLOSE_BRACKET;
 
+// func my_func(name -> String) {}
 function: FUNCTION ID OPEN_BRACKET (parameter)* CLOSE_BRACKET block;
+class: (CLASS | OBJECT) ID block // class MyClass {}
+       | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* block // class MyClass extends OtherClass {}
+       | (CLASS | OBJECT) ID IMPLEMENTS ID (COMMA ID)* block // class MyClass implements MyInterface {}
+       | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* IMPLEMENTS ID (COMMA ID)* block // class MyClass extends OtherClass implements MyInterface {}
+       ;
 
 block: OPEN_BLOCK statement (SEPARATOR statement)* CLOSE_BLOCK;
 
@@ -43,6 +49,8 @@ MULTI_COMMENT: '#-' ~[-#]* '-#' -> skip;
 PRINT: 'print';
 
 FUNCTION: 'func';
+CLASS: 'class';
+OBJECT: 'object';
 
 fragment LOWERCASE: [a-z];
 fragment UPPERCASE: [A-Z];
@@ -53,6 +61,7 @@ NUMBER: [0-9]+;
 BOOLEAN: 'true' | 'false';
 
 DOT: '.';
+COMMA: ',';
 SEPARATOR: ';';
 TYPE_SETTER: '->';
 VARIABLE_SETTER: ':';
@@ -61,6 +70,9 @@ OPEN_BRACKET: '(';
 CLOSE_BRACKET: ')';
 OPEN_BLOCK: '{';
 CLOSE_BLOCK: '}';
+
+EXTENDS: 'extends';
+IMPLEMENTS: 'implements';
 
 ID: LOWERCASE (LETTER | NUMBER | '_')*;
 
