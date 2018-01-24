@@ -25,7 +25,7 @@ class MyClass {
         my_name: "MyClass"
     }
 
-    # The class constructor is called when a class is made.
+    # The class constructor is called when a class is made (var = MyClass).
     func construct() {
         try {
             my_empty: "This causes an error!"
@@ -35,7 +35,7 @@ class MyClass {
         }
     }
 
-    # The init method is called when an instance of a class is made.
+    # The init method is called when an instance of a class is made (var = MyClass(*parameters)).
     func init() {
         # Variables are set with a colon
         one: "Hello"
