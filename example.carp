@@ -1,34 +1,53 @@
 package carp
 
-# Comment.
+# Comment
 
 #-
     Multi-line
-    Comment.
+    Comment
 -#
 
 class MyClass {
+    # Variable access type can be set in blocks
     private {
         my_int: 1337
         my_str: "Hello"
         my_list: ["Hello", "World"]
+        my_bool: true
+
+        # Types of variables are only set if not given a value
+        my_empty -> Integer
     }
 
     public {
         my_name: "MyClass"
     }
 
+    # The class constructor is called when a class is made.
+    func construct() {
+        try {
+            my_empty: "This causes an error!"
+        }
+        catch {
+            my_empty: 5
+        }
+    }
+
+    # The init method is called when an instance of a class is made.
     func init() {
+        # Variables are set with a colon
         one: "Hello"
         two: "World!"
         
         print(one, ", ", two)
 
+        # Testing if a variable is equal to another is done with one "="
         if one = two {
             print("I don't know how that happened.")
         }
     }
 
+    # Function parameter types are set with "->"
     func hello(name -> String) {
         doc {
             This function welcomes the caller.
