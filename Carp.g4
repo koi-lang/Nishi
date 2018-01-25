@@ -11,11 +11,11 @@ options {
 program: package code EOF;
 package: PACKAGE ID (DOT ID)*;
 code: (line (SEPARATOR line)*)+;
-line: comment | function | class | statement;
+line: comment | function | class | statement | expression;
 
 comment: COMMENT | MULTI_COMMENT;
 
-statement: print | assignment | if_stmt | switch | return;
+statement: print | assignment | arithmatic_assign | if_stmt | switch | return;
 // print("Hello, World!")
 print: PRINT OPEN_BRACKET (value COMMA)* CLOSE_BRACKET;
 // return 5
@@ -81,8 +81,12 @@ comparison_operator: '=' | '<=' | '<' | '>=' | '>' | '!=';
 arithmatic_operator: '+' | '-' | '*' | '/' | '%';
 arithmatic_assign: arithmatic_operator VARIABLE_SETTER;
 
+expression: arithmatic_expression | post_increment | post_decrement;
+
 post_increment: value INCREMENT;
 post_decrement: value DECREMENT;
+
+arithmatic_expression: NUMBER (arithmatic_operator NUMBER)+;
 
 /*
     Lexer Rules
