@@ -15,9 +15,11 @@ line: comment | function | class | statement;
 
 comment: COMMENT | MULTI_COMMENT;
 
-statement: print | assignment | if_stmt | switch;
+statement: print | assignment | if_stmt | switch | return;
 // print("Hello, World!")
-print: PRINT OPEN_BRACKET ((value | ID) COMMA)* CLOSE_BRACKET;
+print: PRINT OPEN_BRACKET (value COMMA)* CLOSE_BRACKET;
+// return 5
+return: RETURN value;
 // if a = "Hello" {}
 if: IF value (comparison_operator value)+ block;
 // elf a = "World" {}
@@ -87,6 +89,7 @@ COMMENT: '#' ~[\r\n]* -> skip;
 MULTI_COMMENT: '#-' ~[-#]* '-#' -> skip;
 
 PRINT: 'print';
+RETURN: 'return';
 
 IF: 'if';
 ELIF: 'elf';
