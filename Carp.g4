@@ -15,11 +15,19 @@ line: comment | function | class | statement;
 
 comment: COMMENT | MULTI_COMMENT;
 
-statement: print | assignment | if;
+statement: print | assignment | if_stmt;
 // print("Hello, World!")
 print: PRINT OPEN_BRACKET ((value | ID) COMMA)* CLOSE_BRACKET;
 // if a = "Hello" {}
 if: IF value (comparison_operator value)+ block;
+// elf a = "World" {}
+elif: ELIF value (comparison_operator value)+ block;
+// else {}
+else: ELSE block;
+// if a = "Hello" {} elf a = "World" {} else {}
+if_stmt: if elif*
+       | if elif* else
+       ;
 
 assignment: ID TYPE_SETTER type // arg -> Integer
           | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
@@ -77,6 +85,8 @@ MULTI_COMMENT: '#-' ~[-#]* '-#' -> skip;
 PRINT: 'print';
 
 IF: 'if';
+ELIF: 'elf';
+ELSE: 'else';
 
 FUNCTION: 'fun';
 CLASS: 'class';
