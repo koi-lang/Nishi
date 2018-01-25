@@ -41,8 +41,9 @@ assignment: ID TYPE_SETTER type // arg -> Integer
           | ID VARIABLE_SETTER value // arg: value
           ;
 
-// fun my_func(name -> String) {}
-function: FUNCTION ID OPEN_BRACKET doc_block* (parameter)* CLOSE_BRACKET block;
+function: FUNCTION ID OPEN_BRACKET doc_block* (parameter)* CLOSE_BRACKET block // fun my_func(name -> String) {}
+        | FUNCTION ID OPEN_BRACKET doc_block* (parameter)* TYPE_SETTER type CLOSE_BRACKET block // fun my_func(name -> String) -> Void {}
+        ;
 class: (CLASS | OBJECT) ID class_block // class MyClass {}
      | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* class_block // class MyClass extends OtherClass {}
      | (CLASS | OBJECT) ID IMPLEMENTS ID (COMMA ID)* class_block // class MyClass implements MyInterface {}
