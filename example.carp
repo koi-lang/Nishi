@@ -26,7 +26,7 @@ class MyClass {
     }
 
     # The init method is called when an instance of a class is made (var: MyClass(*parameters)).
-    fun MyClass() -> Void {
+    fun MyClass() {
         # Variables are set with a colon
         one: "Hello"
         two: "World!"
