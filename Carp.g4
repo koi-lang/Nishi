@@ -77,8 +77,12 @@ parameter: ID TYPE_SETTER type // arg -> Integer
          | STAR ID VARIABLE_SETTER value // *arg: value
          ;
 
-comparison_operator: '=' | '<=' | '>=';
-arithmatic_operator: '+' | '-' | '*' | '/';
+comparison_operator: '=' | '<=' | '<' | '>=' | '>' | '!=';
+arithmatic_operator: '+' | '-' | '*' | '/' | '%';
+arithmatic_assign: arithmatic_operator VARIABLE_SETTER;
+
+post_increment: value INCREMENT;
+post_decrement: value DECREMENT;
 
 /*
     Lexer Rules
@@ -128,6 +132,9 @@ OPEN_BLOCK: '{';
 CLOSE_BLOCK: '}';
 LESS_THAN: '<';
 MORE_THAN: '>';
+
+INCREMENT: '++';
+DECREMENT: '--';
 
 EXTENDS: 'extends';
 IMPLEMENTS: 'implements';
