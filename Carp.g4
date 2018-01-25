@@ -8,10 +8,14 @@ options {
     Parser Rules
  */
 
-program: package code EOF;
+program: code EOF
+       | package code EOF
+       ;
 package: PACKAGE ID (DOT ID)*;
 code: (line (SEPARATOR line)*)+;
-line: comment | function | class_ | statement | expression;
+line: comment | import_ | function | class_ | statement | expression;
+
+import_: IMPORT ID (DOT ID)*;
 
 comment: COMMENT | MULTI_COMMENT;
 
@@ -93,6 +97,8 @@ arithmatic_expression: NUMBER (arithmatic_operator NUMBER)+;
  */
 
 PACKAGE: 'package';
+
+IMPORT: 'import';
 
 COMMENT: '#' ~[\r\n]* -> skip;
 MULTI_COMMENT: '#-' .*? '-#' -> skip;
