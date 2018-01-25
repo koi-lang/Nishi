@@ -52,6 +52,17 @@ class MyClass {
         catch TypeError {
             my_empty: 5
         }
+
+        number: 5
+        switch number {
+            case 1 { print("It's one!") }
+            case 2 { print("It's two!") }
+            case "Hello" { print("I don't know how this happened!") }
+            case 3 + 1 { print("It's four!") }
+            case 5 { print("It's five!") }
+
+            else { print("I don't know what it is!") }
+        }
     }
 
     # Function parameter types are set with "->"

@@ -15,7 +15,7 @@ line: comment | function | class | statement;
 
 comment: COMMENT | MULTI_COMMENT;
 
-statement: print | assignment | if_stmt;
+statement: print | assignment | if_stmt | switch;
 // print("Hello, World!")
 print: PRINT OPEN_BRACKET ((value | ID) COMMA)* CLOSE_BRACKET;
 // if a = "Hello" {}
@@ -28,6 +28,10 @@ else: ELSE block;
 if_stmt: if elif*
        | if elif* else
        ;
+
+switch: SWITCH value OPEN_BLOCK (CASE value block)* CLOSE_BLOCK // switch 5 { case 5 { print("Five") } }
+      | SWITCH value OPEN_BLOCK (CASE value block)* else CLOSE_BLOCK // switch 5 { case 5 { print("Five") } else { print("Not five!") } }
+      ;
 
 assignment: ID TYPE_SETTER type // arg -> Integer
           | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
@@ -87,6 +91,9 @@ PRINT: 'print';
 IF: 'if';
 ELIF: 'elf';
 ELSE: 'else';
+
+SWITCH: 'switch';
+CASE: 'case';
 
 FUNCTION: 'fun';
 CLASS: 'class';
