@@ -27,7 +27,7 @@ assignment: ID TYPE_SETTER type // arg -> Integer
           | ID VARIABLE_SETTER value // arg: value
           ;
 
-// func my_func(name -> String) {}
+// fun my_func(name -> String) {}
 function: FUNCTION ID OPEN_BRACKET doc_block* (parameter)* CLOSE_BRACKET block;
 class: (CLASS | OBJECT) ID class_block // class MyClass {}
      | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* class_block // class MyClass extends OtherClass {}
@@ -78,7 +78,7 @@ PRINT: 'print';
 
 IF: 'if';
 
-FUNCTION: 'func';
+FUNCTION: 'fun';
 CLASS: 'class';
 OBJECT: 'object';
 

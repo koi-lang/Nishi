@@ -26,7 +26,7 @@ class MyClass {
     }
 
     # The init method is called when an instance of a class is made (var: MyClass(*parameters)).
-    func MyClass() -> Void {
+    fun MyClass() -> Void {
         # Variables are set with a colon
         one: "Hello"
         two: "World!"
@@ -36,6 +36,12 @@ class MyClass {
         # Testing if a variable is equal to another is done with one "="
         if one = two {
             print("I don't know how that happened.")
+        }
+        elf one != two {
+            print("That's more like it.")
+        }
+        else {
+            print("This also shouldn't happen.")
         }
 
         # A try/catch statement will try to run a block of code
@@ -49,9 +55,9 @@ class MyClass {
     }
 
     # Function parameter types are set with "->"
-    func hello(name -> String) {
+    fun hello(name -> String) {
         doc {
-            This function welcomes the caller.
+            This funtion welcomes the caller.
 
             name: The name to say "Hello" to.
         }
@@ -59,12 +65,12 @@ class MyClass {
         print(f"Hello, {name}")  # Prints a formatted string.
     }
 
-    func add(number_one -> Integer, number_two -> Integer) -> Integer {
+    fun add(number_one -> Integer, number_two -> Integer) -> Integer {
         return number_one + number_two
     }
 
     # Variable over-loading is supported
-    func add(*numbers -> List<Integer>) -> Integer {
+    fun add(*numbers -> List<Integer>) -> Integer {
         sum_: 0
 
         for num in numbers {
@@ -77,7 +83,7 @@ class MyClass {
 
 
 class MyNewClass {
-    func sub(*numbers -> List<Integer>) -> Integer {
+    fun sub(*numbers -> List<Integer>) -> Integer {
         sum_: 0
 
         for num in numbers {
@@ -87,7 +93,7 @@ class MyNewClass {
         return sum
     }
 
-    func add_one(number -> Integer) -> Integer {
+    fun add_one(number -> Integer) -> Integer {
         return number++
     }
 }
@@ -104,6 +110,6 @@ object MyObject {
 }
 
 # Functions can exist outside of classes
-func my_func() {
+fun my_fun() {
     print("Cool!")
 }
