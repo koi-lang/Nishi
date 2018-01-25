@@ -101,3 +101,8 @@ ENV/
 .mypy_cache/
 
 .idea/
+CarpParser.py
+CarpListener.py
+CarpLexer.py
+Carp.tokens
+CarpLexer.tokens
