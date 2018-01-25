@@ -11,44 +11,47 @@ options {
 program: package code EOF;
 package: PACKAGE ID (DOT ID)*;
 code: (line (SEPARATOR line)*)+;
-line: comment | function | class | statement | expression;
+line: comment | function | class_ | statement | expression;
 
 comment: COMMENT | MULTI_COMMENT;
 
-statement: print | assignment | arithmatic_assign | if_stmt | switch | return;
+statement: print_ | assignment | arithmatic_assign | if_stmt | try_catch | switch | return_;
 // print("Hello, World!")
-print: PRINT OPEN_BRACKET (value COMMA)* CLOSE_BRACKET;
+print_: PRINT OPEN_BRACKET (value COMMA)* (value)* CLOSE_BRACKET;
 // return 5
-return: RETURN value;
+return_: RETURN value;
 // if a = "Hello" {}
-if: IF value (comparison_operator value)+ block;
+if_: IF value (comparison_operator value)+ block;
 // elf a = "World" {}
-elif: ELIF value (comparison_operator value)+ block;
+elif_: ELIF value (comparison_operator value)+ block;
 // else {}
-else: ELSE block;
-// if a = "Hello" {} elf a = "World" {} else {}
-if_stmt: if elif*
-       | if elif* else
+else_: ELSE block;
+// if_ a = "Hello" {} elf a = "World" {} else {}
+if_stmt: if_ elif_*
+       | if_ elif_* else_
        ;
 
-switch: SWITCH value OPEN_BLOCK (CASE value block)* CLOSE_BLOCK // switch 5 { case 5 { print("Five") } }
-      | SWITCH value OPEN_BLOCK (CASE value block)* else CLOSE_BLOCK // switch 5 { case 5 { print("Five") } else { print("Not five!") } }
+try_catch: TRY block (CATCH ID block)*;
+
+switch: SWITCH value OPEN_BLOCK (CASE (value | arithmatic_expression) block)* CLOSE_BLOCK // switch 5 { case 5 { print_("Five") } }
+      | SWITCH value OPEN_BLOCK (CASE (value | arithmatic_expression) block)* else_ CLOSE_BLOCK // switch 5 { case 5 { print_("Five") } else_ { print_("Not five!") } }
       ;
 
-assignment: ID TYPE_SETTER type // arg -> Integer
-          | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
-          | STAR ID TYPE_SETTER type // *arg -> Integer
+assignment: ID TYPE_SETTER type_ // arg -> Integer
+          | ID TYPE_SETTER type_ VARIABLE_SETTER value // arg -> Integer: value
+          | STAR ID TYPE_SETTER type_ // *arg -> Integer
           | ID VARIABLE_SETTER value // arg: value
           ;
 
 function: FUNCTION ID OPEN_BRACKET doc_block* (parameter)* CLOSE_BRACKET block // fun my_func(name -> String) {}
-        | FUNCTION ID OPEN_BRACKET doc_block* (parameter)* TYPE_SETTER type CLOSE_BRACKET block // fun my_func(name -> String) -> Void {}
+        | FUNCTION ID OPEN_BRACKET doc_block* (parameter)* TYPE_SETTER type_ CLOSE_BRACKET block // fun my_func(name -> String) -> Void {}
         ;
-class: (CLASS | OBJECT) ID class_block // class MyClass {}
-     | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* class_block // class MyClass extends OtherClass {}
-     | (CLASS | OBJECT) ID IMPLEMENTS ID (COMMA ID)* class_block // class MyClass implements MyInterface {}
-     | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* IMPLEMENTS ID (COMMA ID)* class_block // class MyClass extends OtherClass implements MyInterface {}
-     ;
+
+class_: (CLASS | OBJECT) ID class_block // class_ MyClass {}
+      | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* class_block // class_ MyClass extends OtherClass {}
+      | (CLASS | OBJECT) ID IMPLEMENTS ID (COMMA ID)* class_block // class_ MyClass implements MyInterface {}
+      | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* IMPLEMENTS ID (COMMA ID)* class_block // class_ MyClass extends OtherClass implements MyInterface {}
+      ;
 
 block: OPEN_BLOCK code CLOSE_BLOCK;
 variable_block: OPEN_BLOCK (assignment SEPARATOR)* CLOSE_BLOCK;
@@ -58,21 +61,18 @@ public_block: PUBLIC variable_block;
 // private {}
 private_block: PRIVATE variable_block;
 // doc {}
-doc_block: DOC OPEN_BLOCK . CLOSE_BLOCK;
+doc_block: DOC OPEN_BLOCK .*? CLOSE_BLOCK;
 
-class_block: OPEN_BLOCK doc_block code CLOSE_BLOCK
-           | OPEN_BLOCK doc_block public_block code CLOSE_BLOCK
-           | OPEN_BLOCK doc_block private_block code CLOSE_BLOCK
-           | OPEN_BLOCK doc_block public_block private_block code CLOSE_BLOCK
-           ;
+class_block: OPEN_BLOCK (doc_block | private_block | public_block)* code CLOSE_BLOCK;
 
-value: STRING | NUMBER | BOOLEAN | LIST | ID;
-type: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN type (COMMA type) MORE_THAN | ID;
+value: STRING | NUMBER | BOOLEAN | list_ | ID;
+type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN type_ (COMMA type_) MORE_THAN | ID;
+list_: OPEN_SQUARE (value COMMA)* (value)* CLOSE_SQUARE;
 
-parameter: ID TYPE_SETTER type // arg -> Integer
-         | ID TYPE_SETTER type VARIABLE_SETTER value // arg -> Integer: value
-         | STAR ID TYPE_SETTER type // *arg -> Integer
-         | STAR ID TYPE_SETTER type VARIABLE_SETTER value // *arg -> Integer: value
+parameter: ID TYPE_SETTER type_ // arg -> Integer
+         | ID TYPE_SETTER type_ VARIABLE_SETTER value // arg -> Integer: value
+         | STAR ID TYPE_SETTER type_ // *arg -> Integer
+         | STAR ID TYPE_SETTER type_ VARIABLE_SETTER value // *arg -> Integer: value
          | ID VARIABLE_SETTER value // arg: value
          | STAR ID VARIABLE_SETTER value // *arg: value
          ;
@@ -95,7 +95,7 @@ arithmatic_expression: NUMBER (arithmatic_operator NUMBER)+;
 PACKAGE: 'package';
 
 COMMENT: '#' ~[\r\n]* -> skip;
-MULTI_COMMENT: '#-' ~[-#]* '-#' -> skip;
+MULTI_COMMENT: '#-' .*? '-#' -> skip;
 
 PRINT: 'print';
 RETURN: 'return';
@@ -103,6 +103,9 @@ RETURN: 'return';
 IF: 'if';
 ELIF: 'elf';
 ELSE: 'else';
+
+TRY: 'try';
+CATCH: 'catch';
 
 SWITCH: 'switch';
 CASE: 'case';
@@ -118,9 +121,8 @@ fragment LETTER: (LOWERCASE | UPPERCASE)+;
 STRING: ["] ~["\r\n]* ["];
 NUMBER: [0-9]+;
 BOOLEAN: 'true' | 'false';
-LIST: OPEN_SQUARE (STRING | NUMBER | BOOLEAN | ID)* CLOSE_SQUARE;
 
-ID: LOWERCASE (LETTER | NUMBER | '_')*;
+ID: (LETTER | '_') (LETTER | NUMBER | '_')*;
 
 DOT: '.';
 COMMA: ',';
