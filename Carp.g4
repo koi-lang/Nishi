@@ -12,18 +12,18 @@ program: code EOF
        | package code EOF
        ;
 package: PACKAGE ID (DOT ID)*;
-code: (line (SEPARATOR line)*)+;
+code: (line (SEPARATOR line)*)*;
 line: comment | import_ | function | class_ | statement | expression;
 
 import_: IMPORT ID (DOT ID)*;
 
 comment: COMMENT | MULTI_COMMENT;
 
-statement: print_ | assignment | arithmatic_assign | if_stmt | try_catch | switch | return_;
+statement: print_ | assignment | arithmatic_assign | if_stmt | try_catch | for_loop | switch | return_;
 // print("Hello, World!")
 print_: PRINT OPEN_BRACKET (value COMMA)* (value)* CLOSE_BRACKET;
 // return 5
-return_: RETURN value;
+return_: RETURN (value | expression);
 // if a = "Hello" {}
 if_: IF value (comparison_operator value)+ block;
 // elf a = "World" {}
@@ -37,6 +37,8 @@ if_stmt: if_ elif_*
 
 try_catch: TRY block (CATCH ID block)*;
 
+for_loop: FOR ID IN value block;
+
 switch: SWITCH value OPEN_BLOCK (CASE (value | arithmatic_expression) block)* CLOSE_BLOCK // switch 5 { case 5 { print_("Five") } }
       | SWITCH value OPEN_BLOCK (CASE (value | arithmatic_expression) block)* else_ CLOSE_BLOCK // switch 5 { case 5 { print_("Five") } else_ { print_("Not five!") } }
       ;
@@ -47,18 +49,18 @@ assignment: ID TYPE_SETTER type_ // arg -> Integer
           | ID VARIABLE_SETTER value // arg: value
           ;
 
-function: FUNCTION ID OPEN_BRACKET doc_block* (parameter)* CLOSE_BRACKET block // fun my_func(name -> String) {}
-        | FUNCTION ID OPEN_BRACKET doc_block* (parameter)* TYPE_SETTER type_ CLOSE_BRACKET block // fun my_func(name -> String) -> Void {}
+function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET function_block // fun my_func(name -> String) {}
+        | FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block // fun my_func(name -> String) -> Void {}
         ;
 
-class_: (CLASS | OBJECT) ID class_block // class_ MyClass {}
-      | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* class_block // class_ MyClass extends OtherClass {}
-      | (CLASS | OBJECT) ID IMPLEMENTS ID (COMMA ID)* class_block // class_ MyClass implements MyInterface {}
-      | (CLASS | OBJECT) ID EXTENDS ID (COMMA ID)* IMPLEMENTS ID (COMMA ID)* class_block // class_ MyClass extends OtherClass implements MyInterface {}
+class_: (CLASS | OBJECT) ID class_block // class MyClass {}
+      | (CLASS | OBJECT) ID EXTENDS (ID COMMA)* ID* class_block // class MyClass extends OtherClass {}
+      | (CLASS | OBJECT) ID IMPLEMENTS (ID COMMA)* ID* class_block // class MyClass implements MyInterface {}
+      | (CLASS | OBJECT) ID EXTENDS (ID COMMA)* ID* IMPLEMENTS (ID COMMA)* ID* class_block // class MyClass extends OtherClass implements MyInterface {}
       ;
 
-block: OPEN_BLOCK code CLOSE_BLOCK;
-variable_block: OPEN_BLOCK (assignment SEPARATOR)* CLOSE_BLOCK;
+block: OPEN_BLOCK (doc_block | private_block | public_block)* code CLOSE_BLOCK;
+variable_block: OPEN_BLOCK assignment* CLOSE_BLOCK;
 
 // public {}
 public_block: PUBLIC variable_block;
@@ -67,11 +69,12 @@ private_block: PRIVATE variable_block;
 // doc {}
 doc_block: DOC OPEN_BLOCK .*? CLOSE_BLOCK;
 
+function_block: OPEN_BLOCK doc_block* code CLOSE_BLOCK;
 class_block: OPEN_BLOCK (doc_block | private_block | public_block)* code CLOSE_BLOCK;
 
 value: STRING | NUMBER | BOOLEAN | list_ | ID;
-type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN type_ (COMMA type_) MORE_THAN | ID;
-list_: OPEN_SQUARE (value COMMA)* (value)* CLOSE_SQUARE;
+type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN (type_ COMMA)* type_* MORE_THAN | ID;
+list_: OPEN_SQUARE (value COMMA)* value* CLOSE_SQUARE;
 
 parameter: ID TYPE_SETTER type_ // arg -> Integer
          | ID TYPE_SETTER type_ VARIABLE_SETTER value // arg -> Integer: value
@@ -83,14 +86,14 @@ parameter: ID TYPE_SETTER type_ // arg -> Integer
 
 comparison_operator: '=' | '<=' | '<' | '>=' | '>' | '!=';
 arithmatic_operator: '+' | '-' | '*' | '/' | '%';
-arithmatic_assign: arithmatic_operator VARIABLE_SETTER;
+arithmatic_assign: ID arithmatic_operator VARIABLE_SETTER value;
 
 expression: arithmatic_expression | post_increment | post_decrement;
 
 post_increment: value INCREMENT;
 post_decrement: value DECREMENT;
 
-arithmatic_expression: NUMBER (arithmatic_operator NUMBER)+;
+arithmatic_expression: value (arithmatic_operator value)+;
 
 /*
     Lexer Rules
@@ -113,12 +116,22 @@ ELSE: 'else';
 TRY: 'try';
 CATCH: 'catch';
 
+FOR: 'for';
+IN: 'in';
+
 SWITCH: 'switch';
 CASE: 'case';
 
 FUNCTION: 'fun';
 CLASS: 'class';
 OBJECT: 'object';
+
+EXTENDS: 'extends';
+IMPLEMENTS: 'implements';
+
+PRIVATE: 'private';
+PUBLIC: 'public';
+DOC: 'doc';
 
 fragment LOWERCASE: [a-z];
 fragment UPPERCASE: [A-Z];
@@ -147,13 +160,6 @@ MORE_THAN: '>';
 
 INCREMENT: '++';
 DECREMENT: '--';
-
-EXTENDS: 'extends';
-IMPLEMENTS: 'implements';
-
-PRIVATE: 'private';
-PUBLIC: 'public';
-DOC: 'doc';
 
 SPACE: [ \t\r\n] -> skip;
 WS: [ \t\r\n\f]+ -> skip;
