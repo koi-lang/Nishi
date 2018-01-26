@@ -82,7 +82,7 @@ interface_public_block: PUBLIC interface_variable_block;
 private_block: PRIVATE variable_block;
 interface_private_block: PRIVATE interface_variable_block;
 // doc {}
-doc_block: DOC OPEN_BLOCK .*? CLOSE_BLOCK;
+doc_block: DOC OPEN_BLOCK ~CLOSE_BLOCK* CLOSE_BLOCK;
 
 function_block: OPEN_BLOCK doc_block* code CLOSE_BLOCK
               | OPEN_BLOCK doc_block* code get_block CLOSE_BLOCK

@@ -33,7 +33,7 @@ class MyClass {
         # Variables are set with a colon
         one: "Hello"
         two: "World!"
-        
+
         print(one, ", ", two)
 
         # Testing if a variable is equal to another is done with one "="
@@ -76,7 +76,7 @@ class MyClass {
             name: The name to say "Hello" to.
         }
 
-        print(f"Hello, {name}")  # Prints a formatted string.
+        print("Hello, #{name}")  # Prints a formatted string.
     }
 
     fun add(number_one -> Integer, number_two -> Integer) -> Integer {
