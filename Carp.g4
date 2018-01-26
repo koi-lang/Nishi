@@ -71,7 +71,9 @@ interface: INTERFACE ID interface_block;
 
 block: OPEN_BLOCK code CLOSE_BLOCK;
 variable_block: OPEN_BLOCK (assignment (SEPARATOR (assignment)*)*)* CLOSE_BLOCK;
-interface_variable_block: OPEN_BLOCK (ID (SEPARATOR (ID)*)*)* CLOSE_BLOCK;
+interface_variable_block: OPEN_BLOCK (ID (SEPARATOR (ID)*)*)* CLOSE_BLOCK
+                        | OPEN_BLOCK (ID TYPE_SETTER type_ (SEPARATOR (ID TYPE_SETTER type_)*)*)* CLOSE_BLOCK
+                        ;
 
 // public {}
 public_block: PUBLIC variable_block;
