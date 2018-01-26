@@ -122,6 +122,24 @@ object MyObject {
     # Objects work just like classes, but have an instance of themselves.
 }
 
+interface MyInterface {
+    private {
+        x
+    }
+
+    fun X() -> Integer
+}
+
+class MyImplementedClass implements MyInterface {
+    private {
+        x: 5
+    }
+
+    override fun X() -> Integer {
+        print("X")
+    }
+}
+
 # Functions can exist outside of classes
 fun my_fun() {
     print("Cool!")

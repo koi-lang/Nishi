@@ -13,7 +13,9 @@ program: code EOF
        ;
 package: PACKAGE ID (DOT ID)*;
 code: (line (SEPARATOR line)*)*;
-line: comment | import_ | function | class_ | statement | expression;
+interface_code: (interface_line (SEPARATOR interface_line)*)*;
+line: comment | import_ | function | class_ | interface | statement | expression;
+interface_line: comment | interface_function;
 
 import_: IMPORT ID (DOT ID)*;
 
@@ -49,9 +51,13 @@ assignment: ID TYPE_SETTER type_ // arg -> Integer
           | ID VARIABLE_SETTER value // arg: value
           ;
 
-function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET function_block // fun my_func(name -> String) {}
-        | FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block // fun my_func(name -> String) -> Void {}
+function: OVERRIDE* FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET function_block // fun my_func(name -> String) {}
+        | OVERRIDE* FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block // fun my_func(name -> String) -> Void {}
         ;
+
+interface_function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET // fun my_func(name -> String) {}
+                  | FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ // fun my_func(name -> String) -> Void {}
+                  ;
 
 class_: (CLASS | OBJECT) ID class_block // class MyClass {}
       | (CLASS | OBJECT) ID EXTENDS (ID COMMA)* ID* class_block // class MyClass extends OtherClass {}
@@ -59,18 +65,24 @@ class_: (CLASS | OBJECT) ID class_block // class MyClass {}
       | (CLASS | OBJECT) ID EXTENDS (ID COMMA)* ID* IMPLEMENTS (ID COMMA)* ID* class_block // class MyClass extends OtherClass implements MyInterface {}
       ;
 
-block: OPEN_BLOCK (doc_block | private_block | public_block)* code CLOSE_BLOCK;
+interface: INTERFACE ID interface_block;
+
+block: OPEN_BLOCK code CLOSE_BLOCK;
 variable_block: OPEN_BLOCK assignment* CLOSE_BLOCK;
+interface_variable_block: OPEN_BLOCK ID* CLOSE_BLOCK;
 
 // public {}
 public_block: PUBLIC variable_block;
+interface_public_block: PUBLIC interface_variable_block;
 // private {}
 private_block: PRIVATE variable_block;
+interface_private_block: PRIVATE interface_variable_block;
 // doc {}
 doc_block: DOC OPEN_BLOCK .*? CLOSE_BLOCK;
 
 function_block: OPEN_BLOCK doc_block* code CLOSE_BLOCK;
 class_block: OPEN_BLOCK (doc_block | private_block | public_block)* code CLOSE_BLOCK;
+interface_block: OPEN_BLOCK (doc_block | interface_private_block | interface_public_block)* interface_code CLOSE_BLOCK;
 
 value: STRING | NUMBER | BOOLEAN | list_ | ID;
 type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN (type_ COMMA)* type_* MORE_THAN | ID;
@@ -122,9 +134,11 @@ IN: 'in';
 SWITCH: 'switch';
 CASE: 'case';
 
+OVERRIDE: 'override';
 FUNCTION: 'fun';
 CLASS: 'class';
 OBJECT: 'object';
+INTERFACE: 'interface';
 
 EXTENDS: 'extends';
 IMPLEMENTS: 'implements';
