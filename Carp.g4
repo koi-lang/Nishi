@@ -12,8 +12,10 @@ program: code EOF
        | package code EOF
        ;
 package: PACKAGE ID (DOT ID)*;
-code: (line (SEPARATOR line)*)*;
-interface_code: (interface_line (SEPARATOR interface_line)*)*;
+
+code: (line (SEPARATOR (line)*)*)*;
+interface_code: (interface_line (SEPARATOR (interface_line)*)*)*;
+
 line: comment | import_ | function | class_ | interface | statement | expression;
 interface_line: comment | interface_function;
 
@@ -68,8 +70,8 @@ class_: (CLASS | OBJECT) ID class_block // class MyClass {}
 interface: INTERFACE ID interface_block;
 
 block: OPEN_BLOCK code CLOSE_BLOCK;
-variable_block: OPEN_BLOCK assignment* CLOSE_BLOCK;
-interface_variable_block: OPEN_BLOCK ID* CLOSE_BLOCK;
+variable_block: OPEN_BLOCK (assignment (SEPARATOR (assignment)*)*)* CLOSE_BLOCK;
+interface_variable_block: OPEN_BLOCK (ID (SEPARATOR (ID)*)*)* CLOSE_BLOCK;
 
 // public {}
 public_block: PUBLIC variable_block;

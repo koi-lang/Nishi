@@ -24,7 +24,8 @@ class MyClass {
     }
 
     public {
-        my_name: "MyClass"
+        # Semicolons are optional!
+        my_name: "MyClass";
     }
 
     # The init method is called when an instance of a class is made (var: MyClass(*parameters)).
