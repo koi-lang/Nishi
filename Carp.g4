@@ -16,7 +16,7 @@ package: PACKAGE ID (DOT ID)*;
 code: (line (SEPARATOR (line)*)*)*;
 interface_code: (interface_line (SEPARATOR (interface_line)*)*)*;
 
-line: comment | import_ | function | class_ | interface | statement | expression;
+line: comment | import_ | function | class_ | object_ | interface | statement | expression;
 interface_line: comment | interface_function;
 
 import_: IMPORT ID (DOT ID)*;
@@ -63,11 +63,17 @@ interface_function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE
                   | FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ // fun my_func(name -> String) -> Void {}
                   ;
 
-class_: (CLASS | OBJECT) ID class_block // class MyClass {}
-      | (CLASS | OBJECT) ID EXTENDS (ID COMMA)* ID* class_block // class MyClass extends OtherClass {}
-      | (CLASS | OBJECT) ID IMPLEMENTS (ID COMMA)* ID* class_block // class MyClass implements MyInterface {}
-      | (CLASS | OBJECT) ID EXTENDS (ID COMMA)* ID* IMPLEMENTS (ID COMMA)* ID* class_block // class MyClass extends OtherClass implements MyInterface {}
+class_: CLASS ID class_block #NormalClass // class MyClass {}
+      | CLASS ID EXTENDS (ID COMMA)* ID* class_block #ExtendedClass // class MyClass extends OtherClass {}
+      | CLASS ID IMPLEMENTS (ID COMMA)* ID* class_block #ImplementedClass // class MyClass implements MyInterface {}
+      | CLASS ID EXTENDS (ID COMMA)* ID* IMPLEMENTS (ID COMMA)* ID* class_block #ExtendedImplementedClass // class MyClass extends OtherClass implements MyInterface {}
       ;
+      
+object_: OBJECT ID class_block #NormalObject // object MyObject {}
+       | OBJECT ID EXTENDS (ID COMMA)* ID* class_block #ExtendedObject // object MyObject extends OtherObject {}
+       | OBJECT ID IMPLEMENTS (ID COMMA)* ID* class_block #ImplementedObject // object MyObject implements MyInterface {}
+       | OBJECT ID EXTENDS (ID COMMA)* ID* IMPLEMENTS (ID COMMA)* ID* class_block #ExtendedImplementedObject // object MyObject extends OtherObject implements MyInterface {}
+       ;
 
 interface: INTERFACE ID interface_block;
 
