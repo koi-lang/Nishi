@@ -53,10 +53,10 @@ assignment: ID TYPE_SETTER type_ // arg -> Integer
           | ID VARIABLE_SETTER value // arg: value
           ;
 
-function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET function_block // fun my_func(name -> String) {}
-        | OVERRIDE FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET function_block // override fun my_func(name -> String) {}
-        | FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block // fun my_func(name -> String) -> Void {}
-        | OVERRIDE FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block // override fun my_func(name -> String) -> Void {}
+function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET function_block #NormalFunction // fun my_func(name -> String) {}
+        | OVERRIDE FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET function_block #OverrideFunction // override fun my_func(name -> String) {}
+        | FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block #FunctionSetter // fun my_func(name -> String) -> Void {}
+        | OVERRIDE FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block #OverrideFunctionSetter // override fun my_func(name -> String) -> Void {}
         ;
 
 interface_function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET // fun my_func(name -> String) {}
