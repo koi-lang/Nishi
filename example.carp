@@ -136,9 +136,9 @@ class MyImplementedClass implements MyInterface {
         x: 5
     }
 
-    override fun X(value) -> Integer {
+    override fun X(value -> Integer) -> Integer {
         get { return this.x }
-        set { this.x = value}
+        set { this.x: value}
     }
 }
 
