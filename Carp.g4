@@ -80,9 +80,16 @@ interface_private_block: PRIVATE interface_variable_block;
 // doc {}
 doc_block: DOC OPEN_BLOCK .*? CLOSE_BLOCK;
 
-function_block: OPEN_BLOCK doc_block* code CLOSE_BLOCK;
+function_block: OPEN_BLOCK doc_block* code CLOSE_BLOCK
+              | OPEN_BLOCK doc_block* code get_block CLOSE_BLOCK
+              | OPEN_BLOCK doc_block* code set_block CLOSE_BLOCK
+              | OPEN_BLOCK doc_block* code get_block set_block CLOSE_BLOCK
+              ;
 class_block: OPEN_BLOCK (doc_block | private_block | public_block)* code CLOSE_BLOCK;
 interface_block: OPEN_BLOCK (doc_block | interface_private_block | interface_public_block)* interface_code CLOSE_BLOCK;
+
+get_block: GET OPEN_BLOCK RETURN ID CLOSE_BLOCK;
+set_block: SET OPEN_BLOCK assignment CLOSE_BLOCK;
 
 value: STRING | NUMBER | BOOLEAN | list_ | ID;
 type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN (type_ COMMA)* type_* MORE_THAN | ID;
@@ -139,6 +146,9 @@ FUNCTION: 'fun';
 CLASS: 'class';
 OBJECT: 'object';
 INTERFACE: 'interface';
+
+GET: 'get';
+SET: 'set';
 
 EXTENDS: 'extends';
 IMPLEMENTS: 'implements';

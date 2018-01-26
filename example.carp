@@ -135,8 +135,9 @@ class MyImplementedClass implements MyInterface {
         x: 5
     }
 
-    override fun X() -> Integer {
-        print("X")
+    override fun X(value) -> Integer {
+        get { return x }
+        set { x = value}
     }
 }
 
