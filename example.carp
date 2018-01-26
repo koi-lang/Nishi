@@ -50,10 +50,10 @@ class MyClass {
         # A try/catch statement will try to run a block of code
         # If there are any, the first error will be caught, and the catch block will be run
         try {
-            my_empty: "This causes an error!"
+            this.my_empty: "This causes an error!"
         }
         catch TypeError {
-            my_empty: 5
+            this.my_empty: 5
         }
 
         number: 5
@@ -125,7 +125,7 @@ object MyObject {
 
 interface MyInterface {
     private {
-        x
+        x -> Integer
     }
 
     fun X() -> Integer
@@ -137,8 +137,8 @@ class MyImplementedClass implements MyInterface {
     }
 
     override fun X(value) -> Integer {
-        get { return x }
-        set { x = value}
+        get { return this.x }
+        set { this.x = value}
     }
 }
 

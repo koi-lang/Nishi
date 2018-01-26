@@ -159,6 +159,8 @@ PRIVATE: 'private';
 PUBLIC: 'public';
 DOC: 'doc';
 
+THIS: 'this';
+
 fragment LOWERCASE: [a-z];
 fragment UPPERCASE: [A-Z];
 fragment LETTER: (LOWERCASE | UPPERCASE)+;
@@ -167,7 +169,9 @@ STRING: ["] ~["\r\n]* ["];
 NUMBER: [0-9]+;
 BOOLEAN: 'true' | 'false';
 
-ID: (LETTER | '_') (LETTER | NUMBER | '_')*;
+ID: (LETTER | '_') (LETTER | NUMBER | '_')*
+  | THIS DOT (LETTER | '_') (LETTER | NUMBER | '_')*
+  ;
 
 DOT: '.';
 COMMA: ',';
