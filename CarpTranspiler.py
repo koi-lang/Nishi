@@ -10,6 +10,7 @@ from CarpParser import CarpParser
 
 import io
 from ast import literal_eval
+import os
 
 
 class CarpTranspiler(CarpListener):
@@ -38,12 +39,12 @@ class CarpTranspiler(CarpListener):
                                "Boolean": "bool",
                                "None": "null"}
 
-        self.output.write("using System;\nusing System.Collections.Generic;\n\n")
+        self.insert_text("using System;\nusing System.Collections.Generic", 1, True)
 
     # Package
 
     def enterPackage(self, ctx:CarpParser.PackageContext):
-        self.output.write(f"namespace {ctx.ID()[0]} %s" % "{\n")
+        self.insert_text(f"namespace {ctx.ID()[0]} %s" % "{", 1)
         self.do_indent()
 
         self.package = True
@@ -53,12 +54,12 @@ class CarpTranspiler(CarpListener):
             self.context = None
             self.do_dedent()
 
-            self.output.write("}\n")
+            self.insert_text("}", 1)
 
     # Normal Classes
 
     def enterNormalClass(self, ctx:CarpParser.NormalClassContext):
-        self.output.write(f"{self.indent}class {str(ctx.ID())} %s" % "{\n")
+        self.insert_text(f"class {str(ctx.ID())} %s" % "{", 1)
 
         self.context = str(ctx.ID())
         self.do_indent()
@@ -67,59 +68,59 @@ class CarpTranspiler(CarpListener):
         self.context = None
         self.do_dedent()
 
-        self.output.write(f"{self.indent}%s\n" % "}")
+        self.insert_text("}", 1)
 
     # Normal Functions
 
     def enterNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
         if self.context is not None:
-            self.output.write(f"\n{self.indent}public {'void ' if str(ctx.ID()) != self.context else ''}{str(ctx.ID())}() %s" % "{\n")
+            self.insert_text(f"public {'void ' if str(ctx.ID()) != self.context else ''}{str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
     def exitNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
         self.do_dedent()
 
-        self.output.write(f"{self.indent}%s\n" % "}")
+        self.insert_text("}", 1)
 
     # Override Functions
 
     def enterOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
         if self.context is not None:
-            self.output.write(f"\n{self.indent}public override {str(ctx.ID())}() %s" % "{\n")
+            self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
     def exitOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
         self.do_dedent()
 
-        self.output.write(f"{self.indent}%s\n" % "}")
+        self.insert_text("}", 1)
 
     # Function Setters
 
     def enterFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
         if self.context is not None:
-            self.output.write(f"\n{self.indent}public {str(ctx.ID())}() %s" % "{\n")
+            self.insert_text(f"public {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
     def exitFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
         self.do_dedent()
 
-        self.output.write(f"{self.indent}%s\n" % "}")
+        self.insert_text("}", 1)
 
     # Override Function Setters
 
     def enterOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
         if self.context is not None:
-            self.output.write(f"\n{self.indent}public override {str(ctx.ID())}() %s" % "{\n")
+            self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
     def exitOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
         self.do_dedent()
 
-        self.output.write(f"{self.indent}%s\n" % "}")
+        self.insert_text("}", 1)
 
     # Private Block
 
@@ -162,7 +163,7 @@ class CarpTranspiler(CarpListener):
         if value:
             string.append(f"= {value}")
 
-        self.output.write(f"{self.indent}{' '.join(string)};\n")
+        self.insert_text(f"{' '.join(string)}", 1, True)
 
     # Print
 
@@ -170,7 +171,7 @@ class CarpTranspiler(CarpListener):
         values = [i.getText() for i in ctx.value()]
 
         for item in values:
-            self.output.write(f"{self.indent}Console.Write({item});\n")
+            self.insert_text(f"Console.Write({item})", 1, True)
 
     # Other Methods
 
@@ -179,6 +180,9 @@ class CarpTranspiler(CarpListener):
 
     def do_dedent(self):
         self.indent = self.indent[:-4]
+
+    def insert_text(self, text: str, newlines: int=0, line_end: bool=False):
+        self.output.write(f"{self.indent}{text}{';' if line_end else ''}{os.linesep * newlines}")
 
 
 if __name__ == "__main__":
