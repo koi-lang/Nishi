@@ -16,14 +16,14 @@ package: PACKAGE ID (DOT ID)*;
 code: (line (SEPARATOR (line)*)*)*;
 interface_code: (interface_line (SEPARATOR (interface_line)*)*)*;
 
-line: comment | import_ | function | class_ | object_ | interface | statement | expression;
+line: comment | function | class_ | object_ | interface | statement | expression;
 interface_line: comment | interface_function;
 
 import_: IMPORT ID (DOT ID)*;
 
 comment: COMMENT | MULTI_COMMENT;
 
-statement: print_ | assignment | arithmatic_assign | if_stmt | try_catch | for_loop | switch | return_;
+statement: print_ | import_ | call_function | assignment | arithmatic_assign | if_stmt | try_catch | for_loop | switch | return_;
 // print("Hello, World!")
 print_: PRINT OPEN_BRACKET (value COMMA)* (value)* CLOSE_BRACKET;
 // return 5
@@ -58,6 +58,7 @@ function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET f
         | FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block #FunctionSetter // fun my_func(name -> String) -> Void {}
         | OVERRIDE FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block #OverrideFunctionSetter // override fun my_func(name -> String) -> Void {}
         ;
+call_function: FUNCTION OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET;
 
 interface_function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET // fun my_func(name -> String) {}
                   | FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ // fun my_func(name -> String) -> Void {}
@@ -114,6 +115,10 @@ parameter: ID TYPE_SETTER type_ // arg -> Integer
          | ID VARIABLE_SETTER value // arg: value
          | STAR ID VARIABLE_SETTER value // *arg: value
          ;
+
+call_parameter: ID VARIABLE_SETTER value // arg: value
+              | value
+              ;
 
 comparison_operator: '=' | '<=' | '<' | '>=' | '>' | '!=';
 arithmatic_operator: '+' | '-' | '*' | '/' | '%';
