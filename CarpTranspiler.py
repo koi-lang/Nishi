@@ -36,7 +36,7 @@ class CarpTranspiler(CarpListener):
                                "Boolean": "bool",
                                "None": "null"}
 
-        self.output.write("using System.Collections.Generic;\n\n")
+        self.output.write("using System;\nusing System.Collections.Generic;\n\n")
 
     # Normal Classes
 
@@ -150,7 +150,10 @@ class CarpTranspiler(CarpListener):
     # Print
 
     def enterPrint_(self, ctx:CarpParser.Print_Context):
-        self.output.write(f"{self.indent}Console.Write()\n")
+        values = [i.getText() for i in ctx.value()]
+
+        for item in values:
+            self.output.write(f"{self.indent}Console.Write({item});\n")
 
     # Other Methods
 
