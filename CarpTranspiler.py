@@ -20,10 +20,12 @@ class CarpTranspiler(CarpListener):
         self.pretty_print = True
 
         self.context = None
+        self.context_type = ""
         self.access = None
         self.package = False
 
-        self.variable_contexts = {}
+        self.variable_contexts = {"classes": {},
+                                  "functions": {}}
 
         self.indent = ""
 
@@ -41,6 +43,7 @@ class CarpTranspiler(CarpListener):
                                "Float": "float",
                                "List": "List<>",
                                "Boolean": "bool",
+                               "Void": "void",
                                "None": "null"}
 
         self.insert_text("using System;{}using System.Collections.Generic".format("\n" if self.pretty_print else ""), 1, True)
@@ -64,7 +67,8 @@ class CarpTranspiler(CarpListener):
 
     def enterNormalClass(self, ctx:CarpParser.NormalClassContext):
         self.context = str(ctx.ID())
-        self.variable_contexts[str(ctx.ID())] = []
+        self.context_type = "classes"
+        self.variable_contexts["classes"][str(ctx.ID())] = []
 
         self.insert_text(f"class {str(ctx.ID())} %s" % "{", 1)
 
@@ -80,10 +84,11 @@ class CarpTranspiler(CarpListener):
 
     def enterNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
         if self.context is not None:
-            # self.context = str(ctx.ID())
-            # self.variable_contexts[str(ctx.ID())] = []
+            self.context = str(ctx.ID())
+            self.context_type = "functions"
+            self.variable_contexts["functions"][str(ctx.ID())] = []
 
-            self.insert_text(f"public {'void ' if str(ctx.ID()) != self.context else ''}{str(ctx.ID())}() %s" % "{", 1)
+            self.insert_text(f"public {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
@@ -117,7 +122,7 @@ class CarpTranspiler(CarpListener):
             # self.context = str(ctx.ID())
             # self.variable_contexts[str(ctx.ID())] = []
 
-            self.insert_text(f"public {str(ctx.ID())}() %s" % "{", 1)
+            self.insert_text(f"public {self.carp_to_csharp[str(ctx.type_().getText())]} {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
@@ -171,11 +176,12 @@ class CarpTranspiler(CarpListener):
         if self.access is not None:
             string.append(self.access)
 
-        if value and self.access is not None:
-            string.append(self.python_to_csharp[type(literal_eval(value))])
+        if str(ctx.ID()) not in self.variable_contexts[self.context_type][self.context]:
+            if value and self.access is not None:
+                string.append(self.python_to_csharp[type(literal_eval(value))])
 
-        elif value and self.access is None:
-            string.append("var")
+            elif value and self.access is None:
+                string.append("var")
 
         if type_:
             string.append(self.carp_to_csharp[type_])
@@ -185,7 +191,7 @@ class CarpTranspiler(CarpListener):
         if value:
             string.append(f"= {value}")
 
-        self.variable_contexts[self.context].append(str(ctx.ID()))
+        self.variable_contexts[self.context_type][self.context].append(str(ctx.ID()))
 
         self.insert_text(f"{' '.join(string)}", 1, True)
 
