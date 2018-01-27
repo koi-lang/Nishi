@@ -170,8 +170,12 @@ class CarpTranspiler(CarpListener):
     def enterPrint_(self, ctx:CarpParser.Print_Context):
         values = [i.getText() for i in ctx.value()]
 
+        prints = []
+
         for item in values:
-            self.insert_text(f"Console.Write({item})", 1, True)
+            prints.append(f"Console.Write({item})")
+
+        self.insert_text("; ".join(prints), 1, True)
 
     # Other Methods
 
