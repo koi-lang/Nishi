@@ -1,3 +1,5 @@
+package Carp
+
 class MyClass {
     private {
         my_int: 1337

@@ -18,6 +18,8 @@ class CarpTranspiler(CarpListener):
 
         self.context = None
         self.access = None
+        self.package = False
+
         self.indent = ""
 
         self.variables = {}
@@ -38,6 +40,21 @@ class CarpTranspiler(CarpListener):
 
         self.output.write("using System;\nusing System.Collections.Generic;\n\n")
 
+    # Package
+
+    def enterPackage(self, ctx:CarpParser.PackageContext):
+        self.output.write(f"namespace {ctx.ID()[0]} %s" % "{\n")
+        self.do_indent()
+
+        self.package = True
+
+    def exitProgram(self, ctx:CarpParser.ProgramContext):
+        if self.package:
+            self.context = None
+            self.do_dedent()
+
+            self.output.write("}\n")
+
     # Normal Classes
 
     def enterNormalClass(self, ctx:CarpParser.NormalClassContext):
@@ -50,7 +67,7 @@ class CarpTranspiler(CarpListener):
         self.context = None
         self.do_dedent()
 
-        self.output.write("}\n\n")
+        self.output.write(f"{self.indent}%s\n" % "}")
 
     # Normal Functions
 
