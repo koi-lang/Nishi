@@ -1,0 +1,17 @@
+class MyClass {
+    private {
+        my_int: 1337
+        my_empty -> Integer
+    }
+
+    public {
+        name: "MyClass"
+    }
+
+    fun MyClass() {
+        start: "Hello"
+        end: "World!"
+
+        print(start, ", ", end)
+    }
+}

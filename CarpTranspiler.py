@@ -17,6 +17,7 @@ class CarpTranspiler(CarpListener):
         self.output = output
 
         self.context = None
+        self.access = None
         self.indent = " "
 
         self.variables = {}
@@ -87,24 +88,59 @@ class CarpTranspiler(CarpListener):
     def exitOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
         self.output.write(f"{self.indent}%s\n" % "}")
 
+    # Private Block
+
+    def enterPrivate_block(self, ctx:CarpParser.Private_blockContext):
+        self.access = "private"
+
+    def exitPrivate_block(self, ctx:CarpParser.Private_blockContext):
+        self.access = None
+
+    # Public Block
+
+    def enterPublic_block(self, ctx:CarpParser.Public_blockContext):
+        self.access = "public"
+
+    def exitPublic_block(self, ctx:CarpParser.Public_blockContext):
+        self.access = None
+
     # Assignment
 
     def enterAssignment(self, ctx:CarpParser.AssignmentContext):
         type_ = ctx.type_().getText() if ctx.type_() is not None else None
         value = ctx.value().getText() if ctx.value() is not None else None
 
-        print(ctx.ID(), type_, value)
+        string = []
 
-        # self.output.write(f"{self.indent}{self.carp_to_csharp[ctx.type_().getText()] if ctx.type_() is not None else self.python_to_csharp[type(literal_eval(value))]} {str(ctx.ID()).replace('this.', '')} {'=' if value is not None else ''} {ctx.value().getText() if ctx.value() is not None else ''};\n")
+        if self.access is not None:
+            string.append(self.access)
+
+        if value and self.access is not None:
+            string.append(self.python_to_csharp[type(literal_eval(value))])
+
+        elif value and self.access is None:
+            string.append("var")
+
+        if type_:
+            string.append(self.carp_to_csharp[type_])
+
+        string.append(f"{ctx.ID()}")
+
+        if value:
+            string.append(f"= {value}")
+
+        self.output.write(f"{self.indent}{' '.join(string)};\n")
 
 
 if __name__ == "__main__":
-    lexerer = CarpLexer(antlr4.FileStream("example.carp"))
+    file = "simple_class"
+
+    lexerer = CarpLexer(antlr4.FileStream(f"{file}.carp"))
     stream = antlr4.CommonTokenStream(lexerer)
     parser = CarpParser(stream)
     tree = parser.program()
 
-    with open("example.cs", "w") as out:
+    with open(f"{file}.cs", "w") as out:
         interpreter = CarpTranspiler(out)
         walker = antlr4.ParseTreeWalker()
         walker.walk(interpreter, tree)
