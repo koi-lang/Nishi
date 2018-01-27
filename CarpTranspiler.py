@@ -18,7 +18,7 @@ class CarpTranspiler(CarpListener):
 
         self.context = None
         self.access = None
-        self.indent = " "
+        self.indent = ""
 
         self.variables = {}
 
@@ -41,16 +41,16 @@ class CarpTranspiler(CarpListener):
     # Normal Classes
 
     def enterNormalClass(self, ctx:CarpParser.NormalClassContext):
-        self.output.write(f"class {str(ctx.ID())} %s" % "{\n")
+        self.output.write(f"{self.indent}class {str(ctx.ID())} %s" % "{\n")
 
         self.context = str(ctx.ID())
-        self.indent *= 4
+        self.do_indent()
 
     def exitNormalClass(self, ctx:CarpParser.NormalClassContext):
-        self.output.write("}\n\n")
-
         self.context = None
-        self.indent = " "
+        self.do_dedent()
+
+        self.output.write("}\n\n")
 
     # Normal Functions
 
@@ -58,7 +58,11 @@ class CarpTranspiler(CarpListener):
         if self.context is not None:
             self.output.write(f"\n{self.indent}public {'void ' if str(ctx.ID()) != self.context else ''}{str(ctx.ID())}() %s" % "{\n")
 
+        self.do_indent()
+
     def exitNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
+        self.do_dedent()
+
         self.output.write(f"{self.indent}%s\n" % "}")
 
     # Override Functions
@@ -67,7 +71,11 @@ class CarpTranspiler(CarpListener):
         if self.context is not None:
             self.output.write(f"\n{self.indent}public override {str(ctx.ID())}() %s" % "{\n")
 
+        self.do_indent()
+
     def exitOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
+        self.do_dedent()
+
         self.output.write(f"{self.indent}%s\n" % "}")
 
     # Function Setters
@@ -76,7 +84,11 @@ class CarpTranspiler(CarpListener):
         if self.context is not None:
             self.output.write(f"\n{self.indent}public {str(ctx.ID())}() %s" % "{\n")
 
+        self.do_indent()
+
     def exitFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
+        self.do_dedent()
+
         self.output.write(f"{self.indent}%s\n" % "}")
 
     # Override Function Setters
@@ -85,7 +97,11 @@ class CarpTranspiler(CarpListener):
         if self.context is not None:
             self.output.write(f"\n{self.indent}public override {str(ctx.ID())}() %s" % "{\n")
 
+        self.do_indent()
+
     def exitOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
+        self.do_dedent()
+
         self.output.write(f"{self.indent}%s\n" % "}")
 
     # Private Block
@@ -130,6 +146,19 @@ class CarpTranspiler(CarpListener):
             string.append(f"= {value}")
 
         self.output.write(f"{self.indent}{' '.join(string)};\n")
+
+    # Print
+
+    def enterPrint_(self, ctx:CarpParser.Print_Context):
+        self.output.write(f"{self.indent}Console.Write()\n")
+
+    # Other Methods
+
+    def do_indent(self):
+        self.indent += " " * 4
+
+    def do_dedent(self):
+        self.indent = self.indent[:-4]
 
 
 if __name__ == "__main__":
