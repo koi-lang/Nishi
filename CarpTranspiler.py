@@ -17,9 +17,13 @@ class CarpTranspiler(CarpListener):
     def __init__(self, output: io.FileIO):
         self.output = output
 
+        self.pretty_print = True
+
         self.context = None
         self.access = None
         self.package = False
+
+        self.variable_contexts = {}
 
         self.indent = ""
 
@@ -39,7 +43,7 @@ class CarpTranspiler(CarpListener):
                                "Boolean": "bool",
                                "None": "null"}
 
-        self.insert_text("using System;\nusing System.Collections.Generic", 1, True)
+        self.insert_text("using System;{}using System.Collections.Generic".format("\n" if self.pretty_print else ""), 1, True)
 
     # Package
 
@@ -62,6 +66,7 @@ class CarpTranspiler(CarpListener):
         self.insert_text(f"class {str(ctx.ID())} %s" % "{", 1)
 
         self.context = str(ctx.ID())
+        self.variable_contexts[str(ctx.ID())] = []
         self.do_indent()
 
     def exitNormalClass(self, ctx:CarpParser.NormalClassContext):
@@ -76,9 +81,13 @@ class CarpTranspiler(CarpListener):
         if self.context is not None:
             self.insert_text(f"public {'void ' if str(ctx.ID()) != self.context else ''}{str(ctx.ID())}() %s" % "{", 1)
 
+            self.context = str(ctx.ID())
+            self.variable_contexts[str(ctx.ID())] = []
+
         self.do_indent()
 
     def exitNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
+        self.context = None
         self.do_dedent()
 
         self.insert_text("}", 1)
@@ -89,9 +98,13 @@ class CarpTranspiler(CarpListener):
         if self.context is not None:
             self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
 
+            self.context = str(ctx.ID())
+            self.variable_contexts[str(ctx.ID())] = []
+
         self.do_indent()
 
     def exitOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
+        self.context = None
         self.do_dedent()
 
         self.insert_text("}", 1)
@@ -102,9 +115,13 @@ class CarpTranspiler(CarpListener):
         if self.context is not None:
             self.insert_text(f"public {str(ctx.ID())}() %s" % "{", 1)
 
+            self.context = str(ctx.ID())
+            self.variable_contexts[str(ctx.ID())] = []
+
         self.do_indent()
 
     def exitFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
+        self.context = None
         self.do_dedent()
 
         self.insert_text("}", 1)
@@ -115,9 +132,13 @@ class CarpTranspiler(CarpListener):
         if self.context is not None:
             self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
 
+            self.context = str(ctx.ID())
+            self.variable_contexts[str(ctx.ID())] = []
+
         self.do_indent()
 
     def exitOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
+        self.context = None
         self.do_dedent()
 
         self.insert_text("}", 1)
@@ -186,7 +207,13 @@ class CarpTranspiler(CarpListener):
         self.indent = self.indent[:-4]
 
     def insert_text(self, text: str, newlines: int=0, line_end: bool=False):
-        self.output.write(f"{self.indent}{text}{';' if line_end else ''}{os.linesep * newlines}")
+        if self.pretty_print:
+            self.output.write(f"{self.indent}{text}{';' if line_end else ''}{os.linesep * newlines}")
+
+        else:
+            self.output.write(f"{text}{';' if line_end else ''}")
+
+        print(self.variables)
 
 
 if __name__ == "__main__":
