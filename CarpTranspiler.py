@@ -63,10 +63,11 @@ class CarpTranspiler(CarpListener):
     # Normal Classes
 
     def enterNormalClass(self, ctx:CarpParser.NormalClassContext):
-        self.insert_text(f"class {str(ctx.ID())} %s" % "{", 1)
-
         self.context = str(ctx.ID())
         self.variable_contexts[str(ctx.ID())] = []
+
+        self.insert_text(f"class {str(ctx.ID())} %s" % "{", 1)
+
         self.do_indent()
 
     def exitNormalClass(self, ctx:CarpParser.NormalClassContext):
@@ -79,15 +80,15 @@ class CarpTranspiler(CarpListener):
 
     def enterNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
         if self.context is not None:
-            self.insert_text(f"public {'void ' if str(ctx.ID()) != self.context else ''}{str(ctx.ID())}() %s" % "{", 1)
+            # self.context = str(ctx.ID())
+            # self.variable_contexts[str(ctx.ID())] = []
 
-            self.context = str(ctx.ID())
-            self.variable_contexts[str(ctx.ID())] = []
+            self.insert_text(f"public {'void ' if str(ctx.ID()) != self.context else ''}{str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
     def exitNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
-        self.context = None
+        # self.context = None
         self.do_dedent()
 
         self.insert_text("}", 1)
@@ -96,15 +97,15 @@ class CarpTranspiler(CarpListener):
 
     def enterOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
         if self.context is not None:
-            self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
+            # self.context = str(ctx.ID())
+            # self.variable_contexts[str(ctx.ID())] = []
 
-            self.context = str(ctx.ID())
-            self.variable_contexts[str(ctx.ID())] = []
+            self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
     def exitOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
-        self.context = None
+        # self.context = None
         self.do_dedent()
 
         self.insert_text("}", 1)
@@ -113,15 +114,15 @@ class CarpTranspiler(CarpListener):
 
     def enterFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
         if self.context is not None:
-            self.insert_text(f"public {str(ctx.ID())}() %s" % "{", 1)
+            # self.context = str(ctx.ID())
+            # self.variable_contexts[str(ctx.ID())] = []
 
-            self.context = str(ctx.ID())
-            self.variable_contexts[str(ctx.ID())] = []
+            self.insert_text(f"public {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
     def exitFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
-        self.context = None
+        # self.context = None
         self.do_dedent()
 
         self.insert_text("}", 1)
@@ -130,15 +131,15 @@ class CarpTranspiler(CarpListener):
 
     def enterOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
         if self.context is not None:
-            self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
+            # self.context = str(ctx.ID())
+            # self.variable_contexts[str(ctx.ID())] = []
 
-            self.context = str(ctx.ID())
-            self.variable_contexts[str(ctx.ID())] = []
+            self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
     def exitOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
-        self.context = None
+        # self.context = None
         self.do_dedent()
 
         self.insert_text("}", 1)
@@ -184,12 +185,15 @@ class CarpTranspiler(CarpListener):
         if value:
             string.append(f"= {value}")
 
+        self.variable_contexts[self.context].append(str(ctx.ID()))
+
         self.insert_text(f"{' '.join(string)}", 1, True)
 
     # Print
 
     def enterPrint_(self, ctx:CarpParser.Print_Context):
         values = [i.getText() for i in ctx.value()]
+        values.append('"\\n"')
 
         prints = []
 
@@ -213,7 +217,7 @@ class CarpTranspiler(CarpListener):
         else:
             self.output.write(f"{text}{';' if line_end else ''}")
 
-        print(self.variables)
+        print(self.context, self.variable_contexts)
 
 
 if __name__ == "__main__":
