@@ -126,22 +126,22 @@ class NishiTranspiler(NishiListener):
             self.context_type = "functions"
             self.variable_contexts["functions"][str(ctx.ID())] = []
 
-            parameters = {}
+            parameters = []
 
             for item in ctx.parameter():
                 name = item.ID().getText()
 
-                parameters[name] = {}
-
                 if item.type_():
                     type_ = item.type_().getText()
-                    parameters[name]["type"] = type_
+                    parameters.append(type_)
+
+                parameters.append(name)
 
                 if item.value():
                     value = item.value().getText()
-                    parameters[name]["value"] = value
+                    parameters.append(f"= {value}")
 
-            self.insert_text(f"public {self.carp_to_csharp[str(ctx.type_().getText())]} {str(ctx.ID())}() %s" % "{", 1)
+            self.insert_text(f"public {self.carp_to_csharp[str(ctx.type_().getText())]} {str(ctx.ID())}({' '.join(parameters)}) %s" % "{", 1)
 
         self.do_indent()
 
