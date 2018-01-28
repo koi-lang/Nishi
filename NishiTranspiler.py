@@ -90,7 +90,9 @@ class NishiTranspiler(NishiListener):
             self.context_type = "functions"
             self.variable_contexts["functions"][str(ctx.ID())] = []
 
-            self.insert_text(f"public {str(ctx.ID())}() %s" % "{", 1)
+            parameters = self.get_parameters(ctx.parameter())
+
+            self.insert_text(f"public {str(ctx.ID())}({', '.join(parameters)}) %s" % "{", 1)
 
         self.do_indent()
 
@@ -108,7 +110,9 @@ class NishiTranspiler(NishiListener):
             self.context_type = "functions"
             self.variable_contexts["functions"][str(ctx.ID())] = []
 
-            self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
+            parameters = self.get_parameters(ctx.parameter())
+
+            self.insert_text(f"public override {str(ctx.ID())}({', '.join(parameters)}) %s" % "{", 1)
 
         self.do_indent()
 
@@ -126,24 +130,7 @@ class NishiTranspiler(NishiListener):
             self.context_type = "functions"
             self.variable_contexts["functions"][str(ctx.ID())] = []
 
-            parameters = []
-
-            for item in ctx.parameter():
-                name = item.ID().getText()
-
-                param = []
-
-                if item.type_():
-                    type_ = item.type_().getText()
-                    param.append(self.carp_to_csharp[type_])
-
-                param.append(name)
-
-                if item.value():
-                    value = item.value().getText()
-                    param.append(f"= {value}")
-
-                parameters.append(" ".join(param))
+            parameters = self.get_parameters(ctx.parameter())
 
             self.insert_text(f"public {self.carp_to_csharp[str(ctx.type_().getText())]} {str(ctx.ID())}({', '.join(parameters)}) %s" % "{", 1)
 
@@ -163,7 +150,9 @@ class NishiTranspiler(NishiListener):
             self.context_type = "functions"
             self.variable_contexts["functions"][str(ctx.ID())] = []
 
-            self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
+            parameters = self.get_parameters(ctx.parameter())
+
+            self.insert_text(f"public override {str(ctx.ID())}({', '.join(parameters)}) %s" % "{", 1)
 
         self.do_indent()
 
@@ -254,6 +243,28 @@ class NishiTranspiler(NishiListener):
             self.output.write(f"{text}{';' if line_end else ''}")
 
         # print(self.context, self.variable_contexts)
+
+    def get_parameters(self, ctxparameter):
+        parameters = []
+
+        for item in ctxparameter:
+            name = item.ID().getText()
+
+            param = []
+
+            if item.type_():
+                type_ = item.type_().getText()
+                param.append(self.carp_to_csharp[type_])
+
+            param.append(name)
+
+            if item.value():
+                value = item.value().getText()
+                param.append(f"= {value}")
+
+            parameters.append(" ".join(param))
+
+        return parameters
 
 
 if __name__ == "__main__":
