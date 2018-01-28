@@ -16,10 +16,10 @@ import argparse
 
 
 class CarpTranspiler(CarpListener):
-    def __init__(self, output: io.FileIO):
+    def __init__(self, output: io.FileIO, pretty: bool=True):
         self.output = output
 
-        self.pretty_print = True
+        self.pretty_print = pretty
 
         self.context = None
         self.context_type = ""
@@ -230,10 +230,12 @@ class CarpTranspiler(CarpListener):
 
 if __name__ == "__main__":
     parse_args = argparse.ArgumentParser()
-    parse_args.add_argument("--file", type=str, help="the Carp file")
+    parse_args.add_argument("-f", "--file", type=str, help="the Carp file")
+    parse_args.add_argument("-p", "--pretty", action="store_true", help="pretty print the C# file")
     args = parse_args.parse_args()
 
     file = args.file
+    pretty = args.pretty
 
     if file is None:
         sys.exit()
@@ -244,6 +246,6 @@ if __name__ == "__main__":
     tree = parser.program()
 
     with open(f"{str(file).split('.')[0]}.cs", "w") as out:
-        interpreter = CarpTranspiler(out)
+        interpreter = CarpTranspiler(out, pretty)
         walker = antlr4.ParseTreeWalker()
         walker.walk(interpreter, tree)
