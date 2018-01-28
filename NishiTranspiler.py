@@ -133,7 +133,7 @@ class NishiTranspiler(NishiListener):
 
                 if item.type_():
                     type_ = item.type_().getText()
-                    parameters.append(type_)
+                    parameters.append(self.carp_to_csharp[type_])
 
                 parameters.append(name)
 
