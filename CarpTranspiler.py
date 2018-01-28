@@ -104,8 +104,9 @@ class CarpTranspiler(CarpListener):
 
     def enterOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
         if self.context is not None:
-            # self.context = str(ctx.ID())
-            # self.variable_contexts[str(ctx.ID())] = []
+            self.context = str(ctx.ID())
+            self.context_type = "functions"
+            self.variable_contexts["functions"][str(ctx.ID())] = []
 
             self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
 
@@ -121,8 +122,9 @@ class CarpTranspiler(CarpListener):
 
     def enterFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
         if self.context is not None:
-            # self.context = str(ctx.ID())
-            # self.variable_contexts[str(ctx.ID())] = []
+            self.context = str(ctx.ID())
+            self.context_type = "functions"
+            self.variable_contexts["functions"][str(ctx.ID())] = []
 
             self.insert_text(f"public {self.carp_to_csharp[str(ctx.type_().getText())]} {str(ctx.ID())}() %s" % "{", 1)
 
@@ -138,8 +140,9 @@ class CarpTranspiler(CarpListener):
 
     def enterOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
         if self.context is not None:
-            # self.context = str(ctx.ID())
-            # self.variable_contexts[str(ctx.ID())] = []
+            self.context = str(ctx.ID())
+            self.context_type = "functions"
+            self.variable_contexts["functions"][str(ctx.ID())] = []
 
             self.insert_text(f"public override {str(ctx.ID())}() %s" % "{", 1)
 
@@ -236,6 +239,9 @@ if __name__ == "__main__":
 
     file = args.file
     pretty = args.pretty
+
+    # file = "simple_class.carp"
+    # pretty = True
 
     if file is None:
         sys.exit()

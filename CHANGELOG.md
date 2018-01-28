@@ -2,6 +2,7 @@
 
 ### Carp-0.#.#-alpha
 - Added an argument for pretty printing
+- Fixed variable contexts for other types of functions
 
 ### Carp-0.6.1-alpha
 - Added classes
