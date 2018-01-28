@@ -1,4 +1,4 @@
-grammar Carp;
+grammar Nishi;
 
 options {
     language=Python3;

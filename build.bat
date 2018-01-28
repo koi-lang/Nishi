@@ -1,8 +1,8 @@
 pyinstaller ^
-    --name="carp" ^
+    --name="nishi" ^
     --console ^
     --onefile ^
     --noconfirm ^
     --clean ^
-    --hidden-import="CarpParser" ^
-    CarpTranspiler.py
+    --hidden-import="NishiParser" ^
+    NishiTranspiler.py

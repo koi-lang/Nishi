@@ -4,9 +4,9 @@
 
 import antlr4
 
-from CarpLexer import CarpLexer
-from CarpListener import CarpListener
-from CarpParser import CarpParser
+from NishiLexer import NishiLexer
+from NishiListener import NishiListener
+from NishiParser import NishiParser
 
 import io
 from ast import literal_eval
@@ -15,7 +15,7 @@ import sys
 import argparse
 
 
-class CarpTranspiler(CarpListener):
+class NishiTranspiler(NishiListener):
     def __init__(self, output: io.FileIO, pretty: bool=True):
         self.output = output
 
@@ -52,13 +52,13 @@ class CarpTranspiler(CarpListener):
 
     # Package
 
-    def enterPackage(self, ctx:CarpParser.PackageContext):
+    def enterPackage(self, ctx:NishiParser.PackageContext):
         self.insert_text(f"namespace {ctx.ID()[0]} %s" % "{", 1)
         self.do_indent()
 
         self.package = True
 
-    def exitProgram(self, ctx:CarpParser.ProgramContext):
+    def exitProgram(self, ctx:NishiParser.ProgramContext):
         if self.package:
             self.context = None
             self.do_dedent()
@@ -67,7 +67,7 @@ class CarpTranspiler(CarpListener):
 
     # Normal Classes
 
-    def enterNormalClass(self, ctx:CarpParser.NormalClassContext):
+    def enterNormalClass(self, ctx:NishiParser.NormalClassContext):
         self.context = str(ctx.ID())
         self.context_type = "classes"
         self.variable_contexts["classes"][str(ctx.ID())] = []
@@ -76,7 +76,7 @@ class CarpTranspiler(CarpListener):
 
         self.do_indent()
 
-    def exitNormalClass(self, ctx:CarpParser.NormalClassContext):
+    def exitNormalClass(self, ctx:NishiParser.NormalClassContext):
         self.context = None
         self.do_dedent()
 
@@ -84,7 +84,7 @@ class CarpTranspiler(CarpListener):
 
     # Normal Functions
 
-    def enterNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
+    def enterNormalFunction(self, ctx:NishiParser.NormalFunctionContext):
         if self.context is not None:
             self.context = str(ctx.ID())
             self.context_type = "functions"
@@ -94,7 +94,7 @@ class CarpTranspiler(CarpListener):
 
         self.do_indent()
 
-    def exitNormalFunction(self, ctx:CarpParser.NormalFunctionContext):
+    def exitNormalFunction(self, ctx:NishiParser.NormalFunctionContext):
         # self.context = None
         self.do_dedent()
 
@@ -102,7 +102,7 @@ class CarpTranspiler(CarpListener):
 
     # Override Functions
 
-    def enterOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
+    def enterOverrideFunction(self, ctx:NishiParser.OverrideFunctionContext):
         if self.context is not None:
             self.context = str(ctx.ID())
             self.context_type = "functions"
@@ -112,7 +112,7 @@ class CarpTranspiler(CarpListener):
 
         self.do_indent()
 
-    def exitOverrideFunction(self, ctx:CarpParser.OverrideFunctionContext):
+    def exitOverrideFunction(self, ctx:NishiParser.OverrideFunctionContext):
         # self.context = None
         self.do_dedent()
 
@@ -120,17 +120,32 @@ class CarpTranspiler(CarpListener):
 
     # Function Setters
 
-    def enterFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
+    def enterFunctionSetter(self, ctx:NishiParser.FunctionSetterContext):
         if self.context is not None:
             self.context = str(ctx.ID())
             self.context_type = "functions"
             self.variable_contexts["functions"][str(ctx.ID())] = []
 
+            parameters = {}
+
+            for item in ctx.parameter():
+                name = item.ID().getText()
+
+                parameters[name] = {}
+
+                if item.type_():
+                    type_ = item.type_().getText()
+                    parameters[name]["type"] = type_
+
+                if item.value():
+                    value = item.value().getText()
+                    parameters[name]["value"] = value
+
             self.insert_text(f"public {self.carp_to_csharp[str(ctx.type_().getText())]} {str(ctx.ID())}() %s" % "{", 1)
 
         self.do_indent()
 
-    def exitFunctionSetter(self, ctx:CarpParser.FunctionSetterContext):
+    def exitFunctionSetter(self, ctx:NishiParser.FunctionSetterContext):
         # self.context = None
         self.do_dedent()
 
@@ -138,7 +153,7 @@ class CarpTranspiler(CarpListener):
 
     # Override Function Setters
 
-    def enterOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
+    def enterOverrideFunctionSetter(self, ctx:NishiParser.OverrideFunctionSetterContext):
         if self.context is not None:
             self.context = str(ctx.ID())
             self.context_type = "functions"
@@ -148,7 +163,7 @@ class CarpTranspiler(CarpListener):
 
         self.do_indent()
 
-    def exitOverrideFunctionSetter(self, ctx:CarpParser.OverrideFunctionSetterContext):
+    def exitOverrideFunctionSetter(self, ctx:NishiParser.OverrideFunctionSetterContext):
         # self.context = None
         self.do_dedent()
 
@@ -156,23 +171,23 @@ class CarpTranspiler(CarpListener):
 
     # Private Block
 
-    def enterPrivate_block(self, ctx:CarpParser.Private_blockContext):
+    def enterPrivate_block(self, ctx:NishiParser.Private_blockContext):
         self.access = "private"
 
-    def exitPrivate_block(self, ctx:CarpParser.Private_blockContext):
+    def exitPrivate_block(self, ctx:NishiParser.Private_blockContext):
         self.access = None
 
     # Public Block
 
-    def enterPublic_block(self, ctx:CarpParser.Public_blockContext):
+    def enterPublic_block(self, ctx:NishiParser.Public_blockContext):
         self.access = "public"
 
-    def exitPublic_block(self, ctx:CarpParser.Public_blockContext):
+    def exitPublic_block(self, ctx:NishiParser.Public_blockContext):
         self.access = None
 
     # Assignment
 
-    def enterAssignment(self, ctx:CarpParser.AssignmentContext):
+    def enterAssignment(self, ctx:NishiParser.AssignmentContext):
         type_ = ctx.type_().getText() if ctx.type_() is not None else None
         value = ctx.value().getText() if ctx.value() is not None else None
 
@@ -202,7 +217,7 @@ class CarpTranspiler(CarpListener):
 
     # Print
 
-    def enterPrint_(self, ctx:CarpParser.Print_Context):
+    def enterPrint_(self, ctx:NishiParser.Print_Context):
         values = [i.getText() for i in ctx.value()]
         values.append('"\\n"')
 
@@ -233,25 +248,25 @@ class CarpTranspiler(CarpListener):
 
 if __name__ == "__main__":
     parse_args = argparse.ArgumentParser()
-    parse_args.add_argument("-f", "--file", type=str, help="the Carp file")
+    parse_args.add_argument("-f", "--file", type=str, help="the Nishi file")
     parse_args.add_argument("-p", "--pretty", action="store_true", help="pretty print the C# file")
     args = parse_args.parse_args()
 
     file = args.file
     pretty = args.pretty
 
-    # file = "simple_class.carp"
-    # pretty = True
+    file = "examples/simple_class.nishi"
+    pretty = True
 
     if file is None:
         sys.exit()
 
-    lexerer = CarpLexer(antlr4.FileStream(file))
+    lexerer = NishiLexer(antlr4.FileStream(file))
     stream = antlr4.CommonTokenStream(lexerer)
-    parser = CarpParser(stream)
+    parser = NishiParser(stream)
     tree = parser.program()
 
     with open(f"{str(file).split('.')[0]}.cs", "w") as out:
-        interpreter = CarpTranspiler(out, pretty)
+        interpreter = NishiTranspiler(out, pretty)
         walker = antlr4.ParseTreeWalker()
         walker.walk(interpreter, tree)
