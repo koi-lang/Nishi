@@ -26,4 +26,8 @@ class MyClass {
     fun hello(friend -> String) -> Void {
         print("Hello, ", friend)
     }
+
+    fun add(one -> Integer, two -> Integer) -> Integer {
+        return one + two
+    }
 }

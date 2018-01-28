@@ -131,17 +131,21 @@ class NishiTranspiler(NishiListener):
             for item in ctx.parameter():
                 name = item.ID().getText()
 
+                param = []
+
                 if item.type_():
                     type_ = item.type_().getText()
-                    parameters.append(self.carp_to_csharp[type_])
+                    param.append(self.carp_to_csharp[type_])
 
-                parameters.append(name)
+                param.append(name)
 
                 if item.value():
                     value = item.value().getText()
-                    parameters.append(f"= {value}")
+                    param.append(f"= {value}")
 
-            self.insert_text(f"public {self.carp_to_csharp[str(ctx.type_().getText())]} {str(ctx.ID())}({' '.join(parameters)}) %s" % "{", 1)
+                parameters.append(" ".join(param))
+
+            self.insert_text(f"public {self.carp_to_csharp[str(ctx.type_().getText())]} {str(ctx.ID())}({', '.join(parameters)}) %s" % "{", 1)
 
         self.do_indent()
 
@@ -227,6 +231,12 @@ class NishiTranspiler(NishiListener):
             prints.append(f"Console.Write({item})")
 
         self.insert_text("; ".join(prints), 1, True)
+
+    def enterReturn_(self, ctx:NishiParser.Return_Context):
+        value = ctx.value()
+        expression = ctx.expression()
+
+        self.insert_text(f"return {value.getText() if value is not None else expression.getText()}", 1, True)
 
     # Other Methods
 
