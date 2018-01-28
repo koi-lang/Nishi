@@ -223,7 +223,7 @@ class CarpTranspiler(CarpListener):
         else:
             self.output.write(f"{text}{';' if line_end else ''}")
 
-        print(self.context, self.variable_contexts)
+        # print(self.context, self.variable_contexts)
 
 
 if __name__ == "__main__":
