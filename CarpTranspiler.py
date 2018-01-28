@@ -11,6 +11,8 @@ from CarpParser import CarpParser
 import io
 from ast import literal_eval
 import os
+import sys
+import argparse
 
 
 class CarpTranspiler(CarpListener):
@@ -227,14 +229,21 @@ class CarpTranspiler(CarpListener):
 
 
 if __name__ == "__main__":
-    file = "simple_class"
+    parse_args = argparse.ArgumentParser()
+    parse_args.add_argument("--file", type=str, help="the Carp file")
+    args = parse_args.parse_args()
 
-    lexerer = CarpLexer(antlr4.FileStream(f"{file}.carp"))
+    file = args.file
+
+    if file is None:
+        sys.exit()
+
+    lexerer = CarpLexer(antlr4.FileStream(file))
     stream = antlr4.CommonTokenStream(lexerer)
     parser = CarpParser(stream)
     tree = parser.program()
 
-    with open(f"{file}.cs", "w") as out:
+    with open(f"{str(file).split('.')[0]}.cs", "w") as out:
         interpreter = CarpTranspiler(out)
         walker = antlr4.ParseTreeWalker()
         walker.walk(interpreter, tree)

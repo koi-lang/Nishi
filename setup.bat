@@ -1,7 +1,8 @@
 pyinstaller ^
-    --name="Carp" ^
+    --name="carp" ^
     --console ^
     --onefile ^
     --noconfirm ^
     --clean ^
+    --hidden-import="CarpParser" ^
     CarpTranspiler.py
