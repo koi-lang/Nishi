@@ -19,6 +19,8 @@ class MyClass {
         start: "Bye"
 
         print(start, ", ", end)
+
+        hello("Nishi")
     }
 
     fun hello() {

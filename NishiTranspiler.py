@@ -171,6 +171,24 @@ class NishiTranspiler(NishiListener):
 
         self.insert_text("}", 1)
 
+    # Function Call
+
+    def enterCall_function(self, ctx:NishiParser.Call_functionContext):
+        func = ctx.ID().getText()
+        parameters = ctx.call_parameter()
+
+        params = []
+        par = 0
+
+        for item in parameters:
+            params.append(item.getText())
+
+            if item.getText() != parameters[-1].getText():
+                params.append(",")
+                par += 1
+
+        self.insert_text(f"{func}({' '.join(params)})", 1, True)
+
     # Private Block
 
     def enterPrivate_block(self, ctx:NishiParser.Private_blockContext):
@@ -254,14 +272,6 @@ class NishiTranspiler(NishiListener):
 
     def enterElif_(self, ctx:NishiParser.Elif_Context):
         operator = [i.getText() for i in ctx.comparison_operator()]
-
-        comparison = []
-
-        for index, item in enumerate(ctx.value()):
-            comparison.append(item.getText())
-
-            if index != ctx.value()[-1]:
-                comparison.append(operator[0])
 
         # print(comparison)
 
