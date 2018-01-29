@@ -11,6 +11,7 @@
 - Removed default imports
 - Updated transpiled print statements
 - Added a default return type to functions
+- Added import statements
 
 ### [Carp-0.6.1-alpha](https://github.com/DeflatedPickle/Carp/releases/tag/v0.6.1-alpha)
 - Added classes
