@@ -86,13 +86,15 @@ class NishiTranspiler(NishiListener):
 
     def enterNormalFunction(self, ctx:NishiParser.NormalFunctionContext):
         if self.context is not None:
+            void = " void" if self.context != str(ctx.ID()) else ""
+
             self.context = str(ctx.ID())
             self.context_type = "functions"
             self.variable_contexts["functions"][str(ctx.ID())] = []
 
             parameters = self.get_parameters(ctx.parameter())
 
-            self.insert_text(f"public {str(ctx.ID())}({', '.join(parameters)}) %s" % "{", 1)
+            self.insert_text(f"public{void} {str(ctx.ID())}({', '.join(parameters)}) %s" % "{", 1)
 
         self.do_indent()
 
