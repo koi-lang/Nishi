@@ -1,5 +1,8 @@
 # Changelog
 
+### [Nishi-0.#.#-alpha]()
+- Fixed [#24](https://github.com/DeflatedPickle/Nishi/issues/24)
+
 ### [Nishi-0.12.6-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.12.6-alpha)
 - Added an argument for pretty printing
 - Fixed [#22](https://github.com/DeflatedPickle/Nishi/issues/22)

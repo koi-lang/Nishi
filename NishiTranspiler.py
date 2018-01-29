@@ -221,7 +221,7 @@ class NishiTranspiler(NishiListener):
             if value and self.access is not None:
                 string.append(self.convert_types(type(literal_eval(value))))
 
-            elif value and self.access is None and not class_var:
+            elif value and self.access is None and not class_var and type_ is None:
                 string.append("var")
 
         if type_:
