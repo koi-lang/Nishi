@@ -217,7 +217,7 @@ class NishiTranspiler(NishiListener):
         if self.access is not None:
             string.append(self.access)
 
-        if str(ctx.ID()) not in self.variable_contexts[self.context_type][self.context]:
+        if str(ctx.ID()) not in self.variable_contexts[self.context_type][self.context] and type_ is None:
             if value and self.access is not None:
                 string.append(self.convert_types(type(literal_eval(value))))
 
