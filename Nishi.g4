@@ -104,7 +104,7 @@ interface_block: OPEN_BLOCK (doc_block | interface_private_block | interface_pub
 get_block: GET OPEN_BLOCK RETURN ID CLOSE_BLOCK;
 set_block: SET OPEN_BLOCK assignment CLOSE_BLOCK;
 
-value: STRING | NUMBER | BOOLEAN | list_ | ID;
+value: STRING | NUMBER | BOOLEAN | FLOAT | list_ | ID;
 type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN (type_ COMMA)* type_* MORE_THAN | ID;
 list_: OPEN_SQUARE (value COMMA)* value* CLOSE_SQUARE;
 
@@ -183,6 +183,7 @@ fragment LETTER: (LOWERCASE | UPPERCASE)+;
 STRING: ["] ~["\r\n]* ["];
 NUMBER: [0-9]+;
 BOOLEAN: 'true' | 'false';
+FLOAT: NUMBER* '.' NUMBER*;
 
 ID: (LETTER | '_') (LETTER | NUMBER | '_')*
   | THIS DOT (LETTER | '_') (LETTER | NUMBER | '_')*

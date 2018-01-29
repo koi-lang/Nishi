@@ -6,6 +6,9 @@ class MyClass {
     private {
         my_int: 1337
         my_empty -> Integer
+
+        my_float: 5.37
+        my_other_float -> Float: 5.37
     }
 
     public {

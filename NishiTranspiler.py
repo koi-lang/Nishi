@@ -212,6 +212,8 @@ class NishiTranspiler(NishiListener):
         value = ctx.value().getText() if ctx.value() is not None else None
         class_var = True if str(ctx.ID()).startswith("this.") else False
 
+        is_float = False
+
         string = []
 
         if self.access is not None:
@@ -224,13 +226,19 @@ class NishiTranspiler(NishiListener):
             elif value and self.access is None and not class_var and type_ is None:
                 string.append("var")
 
+            if self.convert_types(type(literal_eval(value))) == "float":
+                    is_float = True
+
+        if self.convert_types(type_) == "float":
+            is_float = True
+
         if type_:
             string.append(self.carp_to_csharp[type_])
 
         string.append(f"{ctx.ID()}")
 
         if value:
-            string.append(f"= {value}")
+            string.append(f"= {value}{'f' if is_float else ''}")
 
         self.variable_contexts[self.context_type][self.context].append(str(ctx.ID()))
 

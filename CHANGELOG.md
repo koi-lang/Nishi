@@ -3,6 +3,7 @@
 ### [Nishi-0.#.#-alpha]()
 - Fixed [#24](https://github.com/DeflatedPickle/Nishi/issues/24)
 - Fixed [#26](https://github.com/DeflatedPickle/Nishi/issues/26)
+- Added floating point numbers
 
 ### [Nishi-0.12.6-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.12.6-alpha)
 - Added an argument for pretty printing
