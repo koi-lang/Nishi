@@ -48,7 +48,7 @@ class NishiTranspiler(NishiListener):
                                "Void": "void",
                                "None": "null"}
 
-        self.insert_text("using System;{}using System.Collections.Generic".format("\n" if self.pretty_print else ""), 1, True)
+        # self.insert_text("using System;{}using System.Collections.Generic".format("\n" if self.pretty_print else ""), 1, True)
 
     # Package
 
@@ -191,7 +191,7 @@ class NishiTranspiler(NishiListener):
 
         if str(ctx.ID()) not in self.variable_contexts[self.context_type][self.context]:
             if value and self.access is not None:
-                string.append(self.python_to_csharp[type(literal_eval(value))])
+                string.append(self.convert_types(type(literal_eval(value))))
 
             elif value and self.access is None:
                 string.append("var")
@@ -217,7 +217,7 @@ class NishiTranspiler(NishiListener):
         prints = []
 
         for item in values:
-            prints.append(f"Console.Write({item})")
+            prints.append(f"System.Console.Write({item})")
 
         self.insert_text("; ".join(prints), 1, True)
 
@@ -226,6 +226,56 @@ class NishiTranspiler(NishiListener):
         expression = ctx.expression()
 
         self.insert_text(f"return {value.getText() if value is not None else expression.getText()}", 1, True)
+
+    # If
+
+    def enterIf_(self, ctx:NishiParser.If_Context):
+        operator = [i.getText() for i in ctx.comparison_operator()]
+
+        self.insert_text(f"if ({self.get_comparison(ctx.value(), operator)}) %s" % "{", 1)
+
+        self.do_indent()
+
+    def exitIf_(self, ctx:NishiParser.If_Context):
+        self.do_dedent()
+
+        self.insert_text("}", 1)
+
+    # Else if
+
+    def enterElif_(self, ctx:NishiParser.Elif_Context):
+        operator = [i.getText() for i in ctx.comparison_operator()]
+
+        comparison = []
+
+        for index, item in enumerate(ctx.value()):
+            comparison.append(item.getText())
+
+            if index != ctx.value()[-1]:
+                comparison.append(operator[0])
+
+        # print(comparison)
+
+        self.insert_text(f"else if ({self.get_comparison(ctx.value(), operator)}) %s" % "{", 1)
+
+        self.do_indent()
+
+    def exitElif_(self, ctx:NishiParser.Elif_Context):
+        self.do_dedent()
+
+        self.insert_text("}", 1)
+
+    # Else
+
+    def enterElse_(self, ctx:NishiParser.Else_Context):
+        self.insert_text("else {", 1)
+
+        self.do_indent()
+
+    def exitElse_(self, ctx:NishiParser.Else_Context):
+        self.do_dedent()
+
+        self.insert_text("}", 1)
 
     # Other Methods
 
@@ -265,6 +315,26 @@ class NishiTranspiler(NishiListener):
             parameters.append(" ".join(param))
 
         return parameters
+
+    def get_comparison(self, ctxvalue, operator):
+        comparison = []
+        comparator = 0
+
+        for item in ctxvalue:
+            comparison.append(item.getText())
+
+            if item.getText() != ctxvalue[-1].getText():
+                comparison.append(operator[comparator])
+                comparator += 1
+
+        return " ".join(comparison)
+
+    def convert_types(self, type_):
+        try:
+            return self.carp_to_csharp[type_]
+
+        except KeyError:
+            return self.python_to_csharp[type_]
 
 
 if __name__ == "__main__":

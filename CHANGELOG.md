@@ -7,6 +7,9 @@
 - Fixed function parameters
 - Added return statements
 - Improved function parameters
+- Added if statements
+- Removed default imports
+- Updated transpiled print statements
 
 ### [Carp-0.6.1-alpha](https://github.com/DeflatedPickle/Carp/releases/tag/v0.6.1-alpha)
 - Added classes

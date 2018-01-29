@@ -30,4 +30,16 @@ class MyClass {
     fun add(one -> Integer, two -> Integer) -> Integer {
         return one + two
     }
+
+    fun print_bigger(one -> Integer, two -> Integer) -> Void {
+        if one > two {
+            print(one)
+        }
+        elf two > one {
+            print(two)
+        }
+        else {
+            print("Neither was bigger.")
+        }
+    }
 }
