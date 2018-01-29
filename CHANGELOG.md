@@ -1,8 +1,8 @@
 # Changelog
 
-### [Carp-0.#.#-alpha]()
+### [Nishi-0.12.6-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.12.6-alpha)
 - Added an argument for pretty printing
-- Fixed [#22](https://github.com/DeflatedPickle/Carp/issues/22)
+- Fixed [#22](https://github.com/DeflatedPickle/Nishi/issues/22)
 - Added function parameters
 - Fixed function parameters
 - Added return statements
@@ -15,7 +15,7 @@
 - Added function calls
 - Fixed [#23](https://github.com/DeflatedPickle/Nishi/issues/23)
 
-### [Carp-0.6.1-alpha](https://github.com/DeflatedPickle/Carp/releases/tag/v0.6.1-alpha)
+### [Nishi-0.6.1-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.6.1-alpha)
 - Added classes
 - Added class methods
 - Added variables
