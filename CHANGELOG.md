@@ -13,6 +13,7 @@
 - Added a default return type to functions
 - Added import statements
 - Added function calls
+- Fixed [#23](https://github.com/DeflatedPickle/Nishi/issues/23)
 
 ### [Carp-0.6.1-alpha](https://github.com/DeflatedPickle/Carp/releases/tag/v0.6.1-alpha)
 - Added classes
