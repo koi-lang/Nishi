@@ -3,6 +3,7 @@
 ### [Nishi-0.#.#-alpha]()
 - Added class access
 - Updated grammar to support class type parameters
+- Fixed [#34](https://github.com/DeflatedPickle/Nishi/issues/34)
 
 ### [Nishi-0.18.6-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.18.6-alpha)
 - Fixed [#24](https://github.com/DeflatedPickle/Nishi/issues/24)

@@ -116,7 +116,7 @@ interface_block: OPEN_BLOCK (doc_block | interface_private_block | interface_pub
 get_block: GET OPEN_BLOCK RETURN ID CLOSE_BLOCK;
 set_block: SET OPEN_BLOCK assignment CLOSE_BLOCK;
 
-value: STRING | LITERAL_STRING | MULTI_STRING | NUMBER | BOOLEAN | FLOAT | list_ | ID | ID type_setter (OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET)*;
+value: STRING | LITERAL_STRING | MULTI_STRING | NUMBER | BOOLEAN | FLOAT | list_ | ID | ID type_setter (OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET)* | class_access;
 type_setter: LESS_THAN (type_ COMMA)* type_* MORE_THAN;
 type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' type_setter | ID | ID type_setter;
 list_: OPEN_SQUARE (value COMMA)* value* CLOSE_SQUARE;
