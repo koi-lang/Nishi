@@ -22,6 +22,10 @@ class MyClass {
 
         my_lit_string: 'Im\nliteral.'
         my_non_lit_string: "I'm\nnot\nliteral."
+
+        my_multi_string: `I've
+                          got multiple
+                          lines!`
     }
 
     public {
@@ -46,6 +50,7 @@ class MyClass {
 
         print(my_lit_string)
         print(my_non_lit_string)
+        print(my_multi_string)
     }
 
     fun hello() {
