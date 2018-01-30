@@ -68,9 +68,12 @@ class NishiTranspiler(NishiListener):
     # Imports
 
     def enterImport_(self, ctx:NishiParser.Import_Context):
-        package = ctx.ID()[0].getText()
+        packages = []
 
-        self.insert_text(f"using {package}", 1, True)
+        for item in ctx.ID():
+            packages.append(item.getText())
+
+        self.insert_text(f"using {'.'.join(packages)}", 1, True)
 
     # Normal Classes
 
