@@ -266,9 +266,7 @@ class NishiTranspiler(NishiListener):
     # If
 
     def enterIf_(self, ctx:NishiParser.If_Context):
-        operator = [i.getText() for i in ctx.comparison_operator()]
-
-        self.insert_text(f"if ({self.get_comparison(ctx.value(), operator)}) %s" % "{", 1)
+        self.insert_text(f"if ({ctx.getText().split('{')[0].replace('if', '')}) %s" % "{", 1)
 
         self.do_indent()
 
@@ -280,11 +278,7 @@ class NishiTranspiler(NishiListener):
     # Else if
 
     def enterElif_(self, ctx:NishiParser.Elif_Context):
-        operator = [i.getText() for i in ctx.comparison_operator()]
-
-        # print(comparison)
-
-        self.insert_text(f"else if ({self.get_comparison(ctx.value(), operator)}) %s" % "{", 1)
+        self.insert_text(f"else if ({ctx.getText().split('{')[0].replace('elf', '')}) %s" % "{", 1)
 
         self.do_indent()
 
@@ -343,19 +337,6 @@ class NishiTranspiler(NishiListener):
             parameters.append(" ".join(param))
 
         return parameters
-
-    def get_comparison(self, ctxvalue, operator):
-        comparison = []
-        comparator = 0
-
-        for item in ctxvalue:
-            comparison.append(item.getText())
-
-            if item.getText() != ctxvalue[-1].getText():
-                comparison.append(operator[comparator])
-                comparator += 1
-
-        return " ".join(comparison)
 
     def convert_types(self, type_):
         try:

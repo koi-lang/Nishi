@@ -29,7 +29,7 @@ print_: PRINT OPEN_BRACKET (value COMMA)* (value)* CLOSE_BRACKET;
 // return 5
 return_: RETURN (value | expression);
 // if a = "Hello" {}
-if_: IF value (comparison_operator value)+ block;
+if_: IF (value | expression) (comparison_operator (value | expression))+ block;
 // elf a = "World" {}
 elif_: ELIF value (comparison_operator value)+ block;
 // else {}
