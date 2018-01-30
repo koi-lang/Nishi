@@ -286,7 +286,9 @@ class NishiTranspiler(NishiListener):
 
     def enterPrint_(self, ctx:NishiParser.Print_Context):
         values = [i.getText() for i in ctx.value()]
-        values.append('"\\n"')
+
+        if ctx.PRINTLN():
+            values.append('"\\n"')
 
         prints = []
 

@@ -42,23 +42,23 @@ class MyClass {
 
         start: "Bye"
 
-        print(start, ", ", end)
+        println(start, ", ", end)
 
         this@my_empty: 50
 
         hello("Nishi")
 
-        print(my_lit_string)
-        print(my_non_lit_string)
-        print(my_multi_string)
+        println(my_lit_string)
+        println(my_non_lit_string)
+        println(my_multi_string)
     }
 
     fun hello() {
-        print("Hello, World!")
+        println("Hello, World!")
     }
 
     fun hello(friend -> String) -> Void {
-        print("Hello, ", friend)
+        println("Hello, ", friend)
     }
 
     fun add(one -> Integer, two -> Integer) -> Integer {
@@ -67,13 +67,13 @@ class MyClass {
 
     fun print_bigger(one -> Integer, two -> Integer) -> Void {
         if one > two {
-            print(one)
+            println(one)
         }
         elf two > one {
-            print(two)
+            println(two)
         }
         else {
-            print("Neither was bigger.")
+            println("Neither was bigger.")
         }
     }
 }

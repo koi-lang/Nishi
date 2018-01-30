@@ -24,8 +24,10 @@ import_: IMPORT (ID AT)* ID*;
 comment: COMMENT | MULTI_COMMENT;
 
 statement: print_ | import_ | call_function | assignment | arithmatic_assign | if_stmt | try_catch | for_loop | switch | return_;
-// print("Hello, World!")
-print_: PRINT OPEN_BRACKET (value COMMA)* (value)* CLOSE_BRACKET;
+
+print_: PRINT OPEN_BRACKET (value COMMA)* (value)* CLOSE_BRACKET // print("Hello, World!")
+      | PRINTLN OPEN_BRACKET (value COMMA)* (value)* CLOSE_BRACKET // println("Hello, World!")
+      ;
 // return 5
 return_: RETURN (value | expression);
 // if a = "Hello" {}
@@ -149,6 +151,7 @@ COMMENT: '#' ~[\r\n]* -> skip;
 MULTI_COMMENT: '#-' .*? '-#' -> skip;
 
 PRINT: 'print';
+PRINTLN: 'println';
 RETURN: 'return';
 
 IF: 'if';
