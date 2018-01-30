@@ -1,7 +1,12 @@
 package Nishi
 
-import System
-import System@Collections
+# import System
+# import System@Collections
+
+import {
+    System
+    System@Collections
+}
 
 class MyClass {
     private {

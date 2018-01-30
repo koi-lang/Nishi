@@ -16,7 +16,7 @@ package: PACKAGE (ID AT)* ID*;
 code: (line (SEPARATOR (line)*)*)*;
 interface_code: (interface_line (SEPARATOR (interface_line)*)*)*;
 
-line: comment | function | class_ | object_ | interface | statement | expression;
+line: comment | function | class_ | object_ | interface | statement | expression | import_block;
 interface_line: comment | interface_function;
 
 import_: IMPORT (ID AT)* ID*;
@@ -95,6 +95,9 @@ doc_block: DOC OPEN_BLOCK ~CLOSE_BLOCK* CLOSE_BLOCK;
 // static {}
 static_block: STATIC variable_block;
 interface_static_block: STATIC interface_variable_block;
+// import {}
+import_block: IMPORT OPEN_BLOCK (import_item)* CLOSE_BLOCK;
+import_item: ID (AT ID)*;
 
 function_block: OPEN_BLOCK doc_block* code CLOSE_BLOCK
               | OPEN_BLOCK doc_block* code get_block CLOSE_BLOCK

@@ -8,6 +8,7 @@
 - Changed access syntax
 - Updated import statements
 - Added static blocks
+- Added import blocks
 
 ### [Nishi-0.12.6-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.12.6-alpha)
 - Added an argument for pretty printing

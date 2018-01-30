@@ -217,6 +217,16 @@ class NishiTranspiler(NishiListener):
     def exitStatic_block(self, ctx:NishiParser.Static_blockContext):
         self.static = False
 
+    # Import Block
+
+    def enterImport_item(self, ctx:NishiParser.Import_itemContext):
+        imports = []
+
+        for item in ctx.ID():
+            imports.append(item.getText())
+
+        self.insert_text(f"using {'.'.join(imports)}", 1, True)
+
     # Assignment
 
     def enterAssignment(self, ctx:NishiParser.AssignmentContext):
