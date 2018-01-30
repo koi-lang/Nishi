@@ -19,6 +19,9 @@ class MyClass {
         static {
             my_static -> String
         }
+
+        my_lit_string: 'Im\nliteral.'
+        my_non_lit_string: "I'm\nnot\nliteral."
     }
 
     public {
@@ -40,6 +43,9 @@ class MyClass {
         this@my_empty: 50
 
         hello("Nishi")
+
+        print(my_lit_string)
+        print(my_non_lit_string)
     }
 
     fun hello() {

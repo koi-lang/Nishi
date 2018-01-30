@@ -110,7 +110,7 @@ interface_block: OPEN_BLOCK (doc_block | interface_private_block | interface_pub
 get_block: GET OPEN_BLOCK RETURN ID CLOSE_BLOCK;
 set_block: SET OPEN_BLOCK assignment CLOSE_BLOCK;
 
-value: STRING | NUMBER | BOOLEAN | FLOAT | list_ | ID;
+value: STRING | LITERAL_STRING | NUMBER | BOOLEAN | FLOAT | list_ | ID;
 type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' LESS_THAN (type_ COMMA)* type_* MORE_THAN | ID;
 list_: OPEN_SQUARE (value COMMA)* value* CLOSE_SQUARE;
 
@@ -187,7 +187,8 @@ fragment LOWERCASE: [a-z];
 fragment UPPERCASE: [A-Z];
 fragment LETTER: (LOWERCASE | UPPERCASE)+;
 
-STRING: ["] ~["\r\n]* ["];
+STRING: DOUBLE_QUOTE ~["\r\n]* DOUBLE_QUOTE;
+LITERAL_STRING: SINGLE_QUOTE ~['\r\n]* SINGLE_QUOTE;
 NUMBER: [0-9]+;
 BOOLEAN: 'true' | 'false';
 FLOAT: NUMBER* DOT NUMBER*;
@@ -211,6 +212,8 @@ OPEN_BLOCK: '{';
 CLOSE_BLOCK: '}';
 LESS_THAN: '<';
 MORE_THAN: '>';
+DOUBLE_QUOTE: '"';
+SINGLE_QUOTE: '\'';
 
 INCREMENT: '++';
 DECREMENT: '--';

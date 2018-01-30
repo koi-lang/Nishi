@@ -232,6 +232,7 @@ class NishiTranspiler(NishiListener):
     def enterAssignment(self, ctx:NishiParser.AssignmentContext):
         type_ = ctx.type_().getText() if ctx.type_() is not None else None
         value = ctx.value().getText() if ctx.value() is not None else None
+
         class_var = True if str(ctx.ID()).startswith("this@") else False
 
         is_float = False
@@ -263,6 +264,9 @@ class NishiTranspiler(NishiListener):
         string.append(f"{ctx.ID()}")
 
         if value:
+            if value.startswith("'") and value.endswith("'"):
+                value = value.replace("'", "\"").replace("\\", "\\\\")
+
             string.append(f"= {value}{'f' if is_float else ''}")
 
         self.variable_contexts[self.context_type][self.context].append(str(ctx.ID()))
