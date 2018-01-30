@@ -10,10 +10,18 @@ class MyClass {
 
         my_float: 5.37
         my_other_float -> Float: 5.37
+
+        static {
+            my_static -> String
+        }
     }
 
     public {
         name: "MyClass"
+
+        static {
+            my_public_static: "Static!"
+        }
     }
 
     fun MyClass() {

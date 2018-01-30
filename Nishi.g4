@@ -79,9 +79,9 @@ object_: OBJECT ID class_block #NormalObject // object MyObject {}
 interface: INTERFACE ID interface_block;
 
 block: OPEN_BLOCK code CLOSE_BLOCK;
-variable_block: OPEN_BLOCK (assignment (SEPARATOR (assignment)*)*)* CLOSE_BLOCK;
-interface_variable_block: OPEN_BLOCK (ID (SEPARATOR (ID)*)*)* CLOSE_BLOCK
-                        | OPEN_BLOCK (ID TYPE_SETTER type_ (SEPARATOR (ID TYPE_SETTER type_)*)*)* CLOSE_BLOCK
+variable_block: OPEN_BLOCK (assignment (SEPARATOR (assignment)*)* | static_block)* CLOSE_BLOCK;
+interface_variable_block: OPEN_BLOCK (ID (SEPARATOR (ID)*)* | interface_static_block)* CLOSE_BLOCK
+                        | OPEN_BLOCK (ID TYPE_SETTER type_ (SEPARATOR (ID TYPE_SETTER type_)*)* | interface_static_block)* CLOSE_BLOCK
                         ;
 
 // public {}
@@ -92,6 +92,9 @@ private_block: PRIVATE variable_block;
 interface_private_block: PRIVATE interface_variable_block;
 // doc {}
 doc_block: DOC OPEN_BLOCK ~CLOSE_BLOCK* CLOSE_BLOCK;
+// static {}
+static_block: STATIC variable_block;
+interface_static_block: STATIC interface_variable_block;
 
 function_block: OPEN_BLOCK doc_block* code CLOSE_BLOCK
               | OPEN_BLOCK doc_block* code get_block CLOSE_BLOCK
@@ -173,6 +176,7 @@ IMPLEMENTS: 'implements';
 PRIVATE: 'private';
 PUBLIC: 'public';
 DOC: 'doc';
+STATIC: 'static';
 
 THIS: 'this';
 

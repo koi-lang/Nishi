@@ -34,6 +34,9 @@ After installing those, you just need to run `nishi.bat` to generate the ANTLR l
 - `.lel`
 
 ### Inspired By:
+- C#
+- C++
 - Python
 - Kotlin
 - Red
+- Go

@@ -24,6 +24,7 @@ class NishiTranspiler(NishiListener):
         self.context = None
         self.context_type = ""
         self.access = None
+        self.static = False
         self.package = False
 
         self.variable_contexts = {"classes": {},
@@ -208,6 +209,14 @@ class NishiTranspiler(NishiListener):
     def exitPublic_block(self, ctx:NishiParser.Public_blockContext):
         self.access = None
 
+    # Static Block
+
+    def enterStatic_block(self, ctx:NishiParser.Static_blockContext):
+        self.static = True
+
+    def exitStatic_block(self, ctx:NishiParser.Static_blockContext):
+        self.static = False
+
     # Assignment
 
     def enterAssignment(self, ctx:NishiParser.AssignmentContext):
@@ -221,6 +230,9 @@ class NishiTranspiler(NishiListener):
 
         if self.access is not None:
             string.append(self.access)
+
+        if self.static:
+            string.append("static")
 
         if str(ctx.ID()) not in self.variable_contexts[self.context_type][self.context] and type_ is None:
             if value and self.access is not None:
