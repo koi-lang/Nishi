@@ -29,13 +29,13 @@ After installing those, you just need to run `nishi.bat` to generate the ANTLR l
 ### File Extensions:
 - `.nishi`
 - `.nish`
-- `.kigoi`
 - `.goi`
 - `.lel`
 
 ### Inspired By:
 - C#
 - C++
+- Java
 - Python
 - Kotlin
 - Red
