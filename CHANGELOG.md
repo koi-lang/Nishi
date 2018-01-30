@@ -5,6 +5,7 @@
 - Fixed [#26](https://github.com/DeflatedPickle/Nishi/issues/26)
 - Added floating point numbers
 - Updated if statements
+- Changed access syntax
 
 ### [Nishi-0.12.6-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.12.6-alpha)
 - Added an argument for pretty printing

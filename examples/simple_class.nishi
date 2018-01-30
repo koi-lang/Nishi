@@ -23,7 +23,7 @@ class MyClass {
 
         print(start, ", ", end)
 
-        this.my_empty: 50
+        this@my_empty: 50
 
         hello("Nishi")
     }

@@ -210,7 +210,7 @@ class NishiTranspiler(NishiListener):
     def enterAssignment(self, ctx:NishiParser.AssignmentContext):
         type_ = ctx.type_().getText() if ctx.type_() is not None else None
         value = ctx.value().getText() if ctx.value() is not None else None
-        class_var = True if str(ctx.ID()).startswith("this.") else False
+        class_var = True if str(ctx.ID()).startswith("this@") else False
 
         is_float = False
 
@@ -242,7 +242,7 @@ class NishiTranspiler(NishiListener):
 
         self.variable_contexts[self.context_type][self.context].append(str(ctx.ID()))
 
-        self.insert_text(f"{' '.join(string).replace('this.', '')}", 1, True)
+        self.insert_text(f"{' '.join(string).replace('this@', '')}", 1, True)
 
     # Print
 

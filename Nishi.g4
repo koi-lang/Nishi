@@ -11,7 +11,7 @@ options {
 program: code EOF
        | package code EOF
        ;
-package: PACKAGE ID (DOT ID)*;
+package: PACKAGE (ID AT)* ID*;
 
 code: (line (SEPARATOR (line)*)*)*;
 interface_code: (interface_line (SEPARATOR (interface_line)*)*)*;
@@ -19,7 +19,7 @@ interface_code: (interface_line (SEPARATOR (interface_line)*)*)*;
 line: comment | function | class_ | object_ | interface | statement | expression;
 interface_line: comment | interface_function;
 
-import_: IMPORT ID (DOT ID)*;
+import_: IMPORT (ID AT)* ID*;
 
 comment: COMMENT | MULTI_COMMENT;
 
@@ -183,13 +183,14 @@ fragment LETTER: (LOWERCASE | UPPERCASE)+;
 STRING: ["] ~["\r\n]* ["];
 NUMBER: [0-9]+;
 BOOLEAN: 'true' | 'false';
-FLOAT: NUMBER* '.' NUMBER*;
+FLOAT: NUMBER* DOT NUMBER*;
 
 ID: (LETTER | '_') (LETTER | NUMBER | '_')*
-  | THIS DOT (LETTER | '_') (LETTER | NUMBER | '_')*
+  | THIS AT (LETTER | '_') (LETTER | NUMBER | '_')*
   ;
 
 DOT: '.';
+AT: '@';
 COMMA: ',';
 SEPARATOR: ';';
 TYPE_SETTER: '->';
