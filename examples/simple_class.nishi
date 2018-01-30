@@ -6,6 +6,7 @@ package Nishi
 import {
     System
     System@Collections
+    System@Collections@Generic
 }
 
 class MyClass {
@@ -51,6 +52,11 @@ class MyClass {
         println(my_lit_string)
         println(my_non_lit_string)
         println(my_multi_string)
+
+        my_dict -> Dictionary<String, String>: Dictionary<String, String>()
+        my_dict@Add("MyKey", "MyValue")
+
+        MyClass()@hello()
     }
 
     fun hello() {

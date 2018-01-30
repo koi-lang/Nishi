@@ -193,6 +193,28 @@ class NishiTranspiler(NishiListener):
 
         self.insert_text(f"{func}({' '.join(params)})", 1, True)
 
+    # Create Class
+
+    def enterClass_access(self, ctx:NishiParser.Class_accessContext):
+        clas = ctx.ID().getText()
+        parameters = ctx.call_parameter()
+
+        params = []
+        par = 0
+
+        for item in parameters:
+            params.append(item.getText())
+
+            if item.getText() != parameters[-1].getText():
+                params.append(",")
+                par += 1
+
+        if ctx.ID().getText() in self.variable_contexts["classes"]:
+            self.insert_text(f"new {clas}({' '.join(params)}){'.' if ctx.AT()[0] else ''}", 0, False)
+
+        else:
+            self.insert_text(f"{clas}{'.' if ctx.AT()[0] else ''}", 0, False)
+
     # Private Block
 
     def enterPrivate_block(self, ctx:NishiParser.Private_blockContext):
@@ -236,6 +258,7 @@ class NishiTranspiler(NishiListener):
 
         is_float = False
         multi_string = False
+        capital_type = False
 
         string = []
 
@@ -265,7 +288,11 @@ class NishiTranspiler(NishiListener):
             is_float = True
 
         if type_:
-            string.append(self.carp_to_csharp[type_])
+            string.append(self.convert_types(type_))
+
+            if not self.istype(type_):
+                if type_[0].isupper():
+                    capital_type = True
 
         string.append(f"{ctx.ID()}")
 
@@ -276,7 +303,7 @@ class NishiTranspiler(NishiListener):
             if multi_string:
                 value = value.replace("\"\"\"", "@\"", 1).replace("\"\"\"", "\"", 1)
 
-            string.append(f"= {value}{'f' if is_float else ''}")
+            string.append(f"= {'new ' if capital_type else ''}{value}{'f' if is_float else ''}")
 
         self.variable_contexts[self.context_type][self.context].append(str(ctx.ID()))
 
@@ -383,7 +410,21 @@ class NishiTranspiler(NishiListener):
             return self.carp_to_csharp[type_]
 
         except KeyError:
-            return self.python_to_csharp[type_]
+            try:
+                return self.python_to_csharp[type_]
+
+            except KeyError:
+                return type_
+
+    def istype(self, type_):
+        if type_ in self.python_to_csharp.keys():
+            return True
+
+        elif type_ in self.carp_to_csharp.keys():
+            return True
+
+        else:
+            return False
 
 
 if __name__ == "__main__":

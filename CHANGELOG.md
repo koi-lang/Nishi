@@ -13,6 +13,8 @@
 - Added multiline strings
 - Changed how the print statement works
 - Added a print line statement
+- Added class access
+- Updated grammar to support class type parameters
 
 ### [Nishi-0.12.6-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.12.6-alpha)
 - Added an argument for pretty printing
