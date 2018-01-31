@@ -58,7 +58,7 @@ class MyClass {
 
         print_me: String@Join("\n", my_list)
         println(print_me)
-        
+
         # print(String@Join("\n", my_list))
         # The line above doesn't work.
         # However, variables can be set to the value and then printed.

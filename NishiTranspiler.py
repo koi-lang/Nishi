@@ -460,8 +460,8 @@ if __name__ == "__main__":
     file = args.file
     pretty = args.pretty
 
-    file = "examples/simple_class.nishi"
-    pretty = True
+    # file = "examples/simple_class.nishi"
+    # pretty = True
 
     if file is None:
         sys.exit()

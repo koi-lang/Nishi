@@ -1,6 +1,6 @@
 # Changelog
 
-### [Nishi-0.#.#-alpha]()
+### [Nishi-0.20.5-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.20.5-alpha)
 - Added class access
 - Updated grammar to support class type parameters
 - Fixed [#34](https://github.com/DeflatedPickle/Nishi/issues/34)
