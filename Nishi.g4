@@ -61,7 +61,7 @@ function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET f
         | OVERRIDE FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block #OverrideFunctionSetter // override fun my_func(name -> String) -> Void {}
         ;
 call_function: ID OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET;
-class_access: ID (OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET)* (AT call_function)*;
+class_access: ID (OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET)* (AT call_function | AT ID)*;
 access: ID AT ID
       | ID AT ID OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET
       ;

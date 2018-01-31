@@ -55,8 +55,6 @@ class MyClass {
 
         my_dict -> Dictionary<String, String>: Dictionary<String, String>()
         my_dict@Add("MyKey", "MyValue")
-
-        MyClass()@hello()
     }
 
     fun hello() {
@@ -81,5 +79,10 @@ class MyClass {
         else {
             println("Neither was bigger.")
         }
+    }
+
+    fun print_name() {
+        my_var: MyClass()@name
+        print(my_var)
     }
 }

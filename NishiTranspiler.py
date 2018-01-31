@@ -196,24 +196,25 @@ class NishiTranspiler(NishiListener):
     # Create Class
 
     def enterClass_access(self, ctx:NishiParser.Class_accessContext):
-        clas = ctx.ID().getText()
         parameters = ctx.call_parameter()
 
-        params = []
-        par = 0
+        for clas in ctx.ID():
+            clas = clas.getText()
+            params = []
+            par = 0
 
-        for item in parameters:
-            params.append(item.getText())
+            for item in parameters:
+                params.append(item.getText())
 
-            if item.getText() != parameters[-1].getText():
-                params.append(",")
-                par += 1
+                if item.getText() != parameters[-1].getText():
+                    params.append(",")
+                    par += 1
 
-        if ctx.ID().getText() in self.variable_contexts["classes"]:
-            self.insert_text(f"new {clas}({' '.join(params)}){'.' if ctx.AT()[0] else ''}", 0, False)
+            if clas in self.variable_contexts["classes"]:
+                self.insert_text(f"new {clas}({' '.join(params)}){'.' if ctx.AT()[0] else ''}", 0, False)
 
-        else:
-            self.insert_text(f"{clas}{'.' if ctx.AT()[0] else ''}", 0, False)
+            else:
+                self.insert_text(f"{clas}{'.' if ctx.AT()[0] and clas != ctx.ID()[-1].getText() else ''}", 1, True)
 
     # Private Block
 
@@ -281,8 +282,12 @@ class NishiTranspiler(NishiListener):
             elif value and self.access is None and not class_var and type_ is None:
                 string.append("var")
 
-            if self.convert_types(type(literal_eval(value))) == "float":
-                    is_float = True
+            try:
+                if self.convert_types(type(literal_eval(value))) == "float":
+                        is_float = True
+
+            except ValueError:
+                pass
 
         if self.convert_types(type_) == "float":
             is_float = True
@@ -297,6 +302,11 @@ class NishiTranspiler(NishiListener):
         string.append(f"{ctx.ID()}")
 
         if value:
+            if value.split("()")[0] in self.variable_contexts["classes"]:
+                self.insert_text(f"{' '.join(string)} = ")
+                return
+
+        if value:
             if value.startswith("'") and value.endswith("'"):
                 value = value.replace("'", "\"").replace("\\", "\\\\")
 
@@ -308,6 +318,7 @@ class NishiTranspiler(NishiListener):
         self.variable_contexts[self.context_type][self.context].append(str(ctx.ID()))
 
         self.insert_text(f"{' '.join(string).replace('this@', '')}", 1, True)
+        # self.insert_text(f"{' '.join(string).replace('this@', '').replace('@', '.')}", 1, True)
 
     # Print
 
