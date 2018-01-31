@@ -428,7 +428,7 @@ class NishiTranspiler(NishiListener):
                 return self.python_to_csharp[type_]
 
             except KeyError:
-                return type_
+                return "var"  # type_
 
     def istype(self, type_):
         if type_ in self.python_to_csharp.keys():
