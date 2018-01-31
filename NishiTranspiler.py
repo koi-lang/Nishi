@@ -213,6 +213,9 @@ class NishiTranspiler(NishiListener):
             if clas in self.variable_contexts["classes"]:
                 self.insert_text(f"new {clas}({' '.join(params)}){'.' if ctx.AT()[0] else ''}", 0, False)
 
+            elif clas in self.variable_contexts["functions"][self.context]:
+                self.insert_text(f"{clas}{'.' if ctx.AT()[0] else ''}", 0, False)
+
             else:
                 self.insert_text(f"{clas}{'.' if ctx.AT()[0] and clas != ctx.ID()[-1].getText() else ''}", 1, True)
 

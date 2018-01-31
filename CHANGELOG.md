@@ -5,6 +5,7 @@
 - Updated grammar to support class type parameters
 - Fixed [#34](https://github.com/DeflatedPickle/Nishi/issues/34)
 - Fixed [#33](https://github.com/DeflatedPickle/Nishi/issues/33)
+- Fixed [#35](https://github.com/DeflatedPickle/Nishi/issues/35)
 
 ### [Nishi-0.18.6-alpha](https://github.com/DeflatedPickle/Nishi/releases/tag/v0.18.6-alpha)
 - Fixed [#24](https://github.com/DeflatedPickle/Nishi/issues/24)
