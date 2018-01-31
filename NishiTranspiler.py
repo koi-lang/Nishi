@@ -305,9 +305,15 @@ class NishiTranspiler(NishiListener):
         string.append(f"{ctx.ID()}")
 
         if value:
-            if value.split("()")[0] in self.variable_contexts["classes"]:
+            if value.split("(")[0] in self.variable_contexts["classes"]:
                 self.insert_text(f"{' '.join(string)} = ")
                 return
+
+            elif value.split("(")[0] in self.carp_to_csharp.keys():
+                capital_type = True
+
+            elif value[0].isupper() and value.split("<")[0] in self.carp_to_csharp.keys():
+                capital_type = True
 
         if value:
             if value.startswith("'") and value.endswith("'"):
@@ -316,11 +322,15 @@ class NishiTranspiler(NishiListener):
             if multi_string:
                 value = value.replace("\"\"\"", "@\"", 1).replace("\"\"\"", "\"", 1)
 
+            if "@" in value:
+                self.insert_text(f"{' '.join(string)} = {value.split('@')[0]}.")
+                return
+
             string.append(f"= {'new ' if capital_type else ''}{value}{'f' if is_float else ''}")
 
         self.variable_contexts[self.context_type][self.context].append(str(ctx.ID()))
 
-        self.insert_text(f"{' '.join(string).replace('this@', '')}", 1, True)
+        self.insert_text(f"{' '.join(string).replace('this@', '').replace('@', '.')}", 1, True)
         # self.insert_text(f"{' '.join(string).replace('this@', '').replace('@', '.')}", 1, True)
 
     # Print

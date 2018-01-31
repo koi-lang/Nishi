@@ -53,6 +53,16 @@ class MyClass {
         println(my_non_lit_string)
         println(my_multi_string)
 
+        my_list: List<String>()
+        my_list@Add("MyValue")
+
+        print_me: String@Join("\n", my_list)
+        println(print_me)
+        
+        # print(String@Join("\n", my_list))
+        # The line above doesn't work.
+        # However, variables can be set to the value and then printed.
+
         my_dict -> Dictionary<String, String>: Dictionary<String, String>()
         my_dict@Add("MyKey", "MyValue")
     }

@@ -61,7 +61,7 @@ function: FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET f
         | OVERRIDE FUNCTION ID OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET TYPE_SETTER type_ function_block #OverrideFunctionSetter // override fun my_func(name -> String) -> Void {}
         ;
 call_function: ID OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET;
-class_access: ID (OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET)* (AT call_function | AT ID)*;
+class_access: (ID | type_) (OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET)* (AT call_function | AT ID)*;
 access: ID AT ID
       | ID AT ID OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET
       ;
@@ -116,9 +116,9 @@ interface_block: OPEN_BLOCK (doc_block | interface_private_block | interface_pub
 get_block: GET OPEN_BLOCK RETURN ID CLOSE_BLOCK;
 set_block: SET OPEN_BLOCK assignment CLOSE_BLOCK;
 
-value: STRING | LITERAL_STRING | MULTI_STRING | NUMBER | BOOLEAN | FLOAT | list_ | ID | ID type_setter (OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET)* | class_access;
+value: STRING | LITERAL_STRING | MULTI_STRING | NUMBER | BOOLEAN | FLOAT | ID | (ID | type_) OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET | (ID | type_) type_setter (OPEN_BRACKET (parameter COMMA)* parameter* CLOSE_BRACKET)* | class_access | type_ | class_access;
 type_setter: LESS_THAN (type_ COMMA)* type_* MORE_THAN;
-type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'List' type_setter | ID | ID type_setter;
+type_: 'String' | 'Integer' | 'Boolean' | 'Void' | 'Float' | 'List' | ('List') type_setter | ('List') type_setter OPEN_BRACKET (call_parameter COMMA)* call_parameter* CLOSE_BRACKET | ID | ID type_setter;
 list_: OPEN_SQUARE (value COMMA)* value* CLOSE_SQUARE;
 
 parameter: ID TYPE_SETTER type_ // arg -> Integer
